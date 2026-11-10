@@ -1,0 +1,69 @@
+# Rendu automatique des vidéos Manim sur les serveurs de GitHub.
+# À créer via l'onglet Actions > "set up a workflow yourself".
+# Chaque fois qu'un fichier .py est envoyé (ou remplacé) à la racine du dépôt,
+# la vidéo est calculée et publiée en MP4 dans "Releases" (à droite de la page du dépôt).
+
+name: Rendu Manim
+
+on:
+  push:
+    paths:
+      - "*.py"
+  workflow_dispatch:
+    inputs:
+      qualite:
+        description: "Qualité : l = 480p (rapide), m = 720p, h = 1080p"
+        default: "m"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  rendu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Récupérer les fichiers
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer Manim et LaTeX
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libcairo2-dev libpango1.0-dev pkg-config ffmpeg \
+            texlive texlive-latex-extra texlive-lang-french cm-super dvisvgm
+          pip install -q manim
+
+      - name: Calculer les vidéos
+        run: |
+          Q="${{ github.event.inputs.qualite }}"
+          [ -z "$Q" ] && Q="m"
+          # fichiers modifiés par le dernier envoi (ou tous si lancement manuel / premier envoi)
+          FICHIERS=$(git diff --name-only HEAD~1 HEAD -- '*.py' 2>/dev/null || true)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ -z "$FICHIERS" ]; then
+            FICHIERS=$(ls *.py)
+          fi
+          mkdir -p sortie
+          for f in $FICHIERS; do
+            [ -f "$f" ] || continue
+            nom=$(basename "$f" .py)
+            echo "=== Rendu de $f ==="
+            manim -q$Q --disable_caching -a "$f"
+            find media/videos/"$nom" -name "*.mp4" -not -path "*partial_movie_files*" \
+              -exec sh -c 'cp "$1" "sortie/'"$nom"'_$(basename "$1")"' _ {} \;
+          done
+          ls -la sortie
+
+      - name: Publier les MP4 (onglet Releases)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: rendu-${{ github.run_number }}
+          name: Vidéos – rendu n°${{ github.run_number }}
+          files: sortie/*.mp4
