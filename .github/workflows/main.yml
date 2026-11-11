@@ -6,6 +6,7 @@
 # Version 3 : dossiers acceptés, noms avec espaces/parenthèses acceptés, erreur claire si aucune vidéo.
 
 name: Rendu Manim
+run-name: "🎬 ${{ github.event_name == 'workflow_dispatch' && format('Rendu manuel {0}', github.event.inputs.fichier) || github.event.head_commit.message }}"
 
 on:
   push:
@@ -62,6 +63,7 @@ jobs:
           cat liste.txt
 
       - name: Calculer les vidéos
+        id: rendu
         run: |
           Q="${{ github.event.inputs.qualite }}"
           [ -z "$Q" ] && Q="m"
@@ -83,11 +85,16 @@ jobs:
             echo "::error::Aucune vidéo produite. Vérifier le nom du fichier .py et les messages ci-dessus."
             exit 1
           fi
+          # titre lisible pour la page Releases : « Seconde – 2.1 Identification des espèces – correction ex1a3 »
+          TITRE=$(sed -e 's/\.py$//' -e 's#/# – #g' -e 's/_/ /g' -e 's/  */ /g' liste.txt | paste -sd ';' - | sed 's/;/ + /g')
+          echo "titre=$TITRE" >> "$GITHUB_OUTPUT"
+          echo "date=$(TZ=Europe/Paris date '+%d/%m/%Y %Hh%M')" >> "$GITHUB_OUTPUT"
 
       - name: Publier les MP4 (onglet Releases)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: rendu-${{ github.run_number }}
-          name: Vidéos – rendu n°${{ github.run_number }}
+          name: "${{ steps.rendu.outputs.titre }}"
+          body: "Vidéo calculée le ${{ steps.rendu.outputs.date }} (rendu n°${{ github.run_number }})."
           files: sortie/*.mp4
           fail_on_unmatched_files: true
