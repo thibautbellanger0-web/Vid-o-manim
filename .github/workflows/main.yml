@@ -1,7 +1,9 @@
 # Rendu automatique des vidéos Manim sur les serveurs de GitHub.
-# À créer via l'onglet Actions > "set up a workflow yourself".
+# À créer via l'onglet Actions > "set up a workflow yourself" (ou à coller à la place de l'ancien).
 # Chaque fois qu'un fichier .py est envoyé (ou remplacé) à la racine du dépôt,
 # la vidéo est calculée et publiée en MP4 dans "Releases" (à droite de la page du dépôt).
+# Version 2 : accepte les noms de fichiers avec espaces/parenthèses, et signale une erreur
+# claire (croix rouge) si aucune vidéo n'a été produite.
 
 name: Rendu Manim
 
@@ -15,6 +17,10 @@ on:
         description: "Qualité : l = 480p (rapide), m = 720p, h = 1080p"
         default: "m"
         required: true
+      fichier:
+        description: "Nom du fichier .py à calculer (laisser vide = tous)"
+        default: ""
+        required: false
 
 permissions:
   contents: write
@@ -22,7 +28,7 @@ permissions:
 jobs:
   rendu:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 150
     steps:
       - name: Récupérer les fichiers
         uses: actions/checkout@v4
@@ -41,25 +47,41 @@ jobs:
             texlive texlive-latex-extra texlive-lang-french cm-super dvisvgm
           pip install -q manim
 
+      - name: Liste des fichiers à calculer
+        run: |
+          git -c core.quotepath=off diff --name-only HEAD~1 HEAD -- '*.py' > liste.txt 2>/dev/null || true
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            if [ -n "${{ github.event.inputs.fichier }}" ]; then
+              echo "${{ github.event.inputs.fichier }}" > liste.txt
+            else
+              ls -1 *.py > liste.txt
+            fi
+          fi
+          [ -s liste.txt ] || ls -1 *.py > liste.txt
+          echo "Fichiers à calculer :"
+          cat liste.txt
+
       - name: Calculer les vidéos
         run: |
           Q="${{ github.event.inputs.qualite }}"
           [ -z "$Q" ] && Q="m"
-          # fichiers modifiés par le dernier envoi (ou tous si lancement manuel / premier envoi)
-          FICHIERS=$(git diff --name-only HEAD~1 HEAD -- '*.py' 2>/dev/null || true)
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ -z "$FICHIERS" ]; then
-            FICHIERS=$(ls *.py)
-          fi
-          mkdir -p sortie
-          for f in $FICHIERS; do
-            [ -f "$f" ] || continue
+          mkdir -p sortie travail
+          while IFS= read -r f; do
+            [ -f "$f" ] || { echo "Fichier introuvable : $f"; continue; }
             nom=$(basename "$f" .py)
-            echo "=== Rendu de $f ==="
-            manim -q$Q --disable_caching -a "$f"
-            find media/videos/"$nom" -name "*.mp4" -not -path "*partial_movie_files*" \
-              -exec sh -c 'cp "$1" "sortie/'"$nom"'_$(basename "$1")"' _ {} \;
-          done
+            sur=$(printf '%s' "$nom" | tr -c 'A-Za-z0-9_' '_')
+            cp "$f" "travail/$sur.py"
+            echo "=== Rendu de $f (nom de travail : $sur) ==="
+            manim -q$Q --disable_caching -a "travail/$sur.py"
+            find media/videos/"$sur" -name "*.mp4" -not -path "*partial_movie_files*" -print0 |
+              while IFS= read -r -d '' v; do cp "$v" "sortie/${sur}_$(basename "$v")"; done
+          done < liste.txt
+          echo "Vidéos produites :"
           ls -la sortie
+          if ! ls sortie/*.mp4 >/dev/null 2>&1; then
+            echo "::error::Aucune vidéo produite. Vérifier le nom du fichier .py et les messages ci-dessus."
+            exit 1
+          fi
 
       - name: Publier les MP4 (onglet Releases)
         uses: softprops/action-gh-release@v2
@@ -67,3 +89,4 @@ jobs:
           tag_name: rendu-${{ github.run_number }}
           name: Vidéos – rendu n°${{ github.run_number }}
           files: sortie/*.mp4
+          fail_on_unmatched_files: true
