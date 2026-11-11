@@ -1,16 +1,16 @@
 # Rendu automatique des vidéos Manim sur les serveurs de GitHub.
 # À créer via l'onglet Actions > "set up a workflow yourself" (ou à coller à la place de l'ancien).
-# Chaque fois qu'un fichier .py est envoyé (ou remplacé) à la racine du dépôt,
-# la vidéo est calculée et publiée en MP4 dans "Releases" (à droite de la page du dépôt).
-# Version 2 : accepte les noms de fichiers avec espaces/parenthèses, et signale une erreur
-# claire (croix rouge) si aucune vidéo n'a été produite.
+# Chaque fois qu'un fichier .py est envoyé (ou remplacé), dans n'importe quel dossier du dépôt
+# (ex. Premiere/2.2_Spectrophotometrie/), la vidéo est calculée et publiée en MP4 dans "Releases".
+# Le nom de la vidéo reprend le chemin : Premiere_2_2_Spectrophotometrie_correction_exo1_eosine_Correction.mp4
+# Version 3 : dossiers acceptés, noms avec espaces/parenthèses acceptés, erreur claire si aucune vidéo.
 
 name: Rendu Manim
 
 on:
   push:
     paths:
-      - "*.py"
+      - "**.py"
   workflow_dispatch:
     inputs:
       qualite:
@@ -18,7 +18,7 @@ on:
         default: "m"
         required: true
       fichier:
-        description: "Nom du fichier .py à calculer (laisser vide = tous)"
+        description: "Chemin du fichier .py à calculer, ex. Seconde/2.1_Especes/correction.py (vide = tous)"
         default: ""
         required: false
 
@@ -54,10 +54,10 @@ jobs:
             if [ -n "${{ github.event.inputs.fichier }}" ]; then
               echo "${{ github.event.inputs.fichier }}" > liste.txt
             else
-              ls -1 *.py > liste.txt
+              git -c core.quotepath=off ls-files '*.py' > liste.txt
             fi
           fi
-          [ -s liste.txt ] || ls -1 *.py > liste.txt
+          [ -s liste.txt ] || git -c core.quotepath=off ls-files '*.py' > liste.txt
           echo "Fichiers à calculer :"
           cat liste.txt
 
@@ -68,8 +68,9 @@ jobs:
           mkdir -p sortie travail
           while IFS= read -r f; do
             [ -f "$f" ] || { echo "Fichier introuvable : $f"; continue; }
-            nom=$(basename "$f" .py)
-            sur=$(printf '%s' "$nom" | tr -c 'A-Za-z0-9_' '_')
+            nom="${f%.py}"
+            sur=$(printf '%s' "$nom" | iconv -f utf-8 -t ascii//TRANSLIT 2>/dev/null | tr -c 'A-Za-z0-9_' '_')
+            [ -n "$sur" ] || sur=video
             cp "$f" "travail/$sur.py"
             echo "=== Rendu de $f (nom de travail : $sur) ==="
             manim -q$Q --disable_caching -a "travail/$sur.py"
