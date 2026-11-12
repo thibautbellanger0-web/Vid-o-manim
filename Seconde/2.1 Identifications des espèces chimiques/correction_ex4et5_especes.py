@@ -510,7 +510,7 @@ class Correction(Scene):
                            .move_to([x, rng.uniform(-0.45, 0.25), 0]) for x in (-2.0, -1.5, -1.0, 0.95, 1.45, 1.95)])
         sel = VGroup(*[Dot([rng.uniform(-2.3, 2.3), rng.uniform(-0.65, -0.45), 0], radius=0.025, color=WHITE) for _ in range(30)])
         tube = self.tube_essai(h=2.6, w=0.55)
-        tube.move_to([0, 0.35, 0])
+        tube.align_to(cris, DOWN).shift(UP * 0.14)          # le tube repose dans le cristallisoir
         y_b = tube[1].get_bottom()[1]
         y_l = y_b + 1.3
         niveau_s = ValueTracker(0.0)            # fraction solidifiée (0 → 1)
