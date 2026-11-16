@@ -3,7 +3,8 @@
 # Chaque fois qu'un fichier .py est envoyé (ou remplacé), dans n'importe quel dossier du dépôt
 # (ex. Premiere/2.2_Spectrophotometrie/), la vidéo est calculée et publiée en MP4 dans "Releases".
 # Le nom de la vidéo reprend le chemin : Premiere_2_2_Spectrophotometrie_correction_exo1_eosine_Correction.mp4
-# Version 3 : dossiers acceptés, noms avec espaces/parenthèses acceptés, erreur claire si aucune vidéo.
+# Version 5 : dossiers et noms avec espaces acceptés ; journal court ; en cas d'erreur Manim,
+# le message exact apparaît dans le résumé du rendu (Annotations) et la fin du journal est réimprimée.
 
 name: Rendu Manim
 run-name: "🎬 ${{ github.event_name == 'workflow_dispatch' && format('Rendu manuel {0}', github.event.inputs.fichier) || github.event.head_commit.message }}"
@@ -75,7 +76,18 @@ jobs:
             [ -n "$sur" ] || sur=video
             cp "$f" "travail/$sur.py"
             echo "=== Rendu de $f (nom de travail : $sur) ==="
-            manim -q$Q --disable_caching -a "travail/$sur.py"
+            # journal court (sans barres de progression) ; en cas d'erreur, le message exact
+            # s'affiche dans le résumé du rendu (Annotations) et la fin du journal est réimprimée.
+            set -o pipefail
+            if ! manim -q$Q --disable_caching --progress_bar none -a "travail/$sur.py" 2>&1 | tee "travail/$sur.log"; then
+              msg=$(grep -E "(Error|Exception)" "travail/$sur.log" | grep -v "^ *│" | tail -n 1 | tr -d '\r' || true)
+              [ -n "$msg" ] || msg=$(grep -E "(Error|Exception)" "travail/$sur.log" | tail -n 1 | tr -d '\r' || true)
+              echo "::error title=Erreur Manim dans $f::$msg"
+              echo "================ FIN DU JOURNAL ($f) ================"
+              tail -n 80 "travail/$sur.log"
+              echo "======================================================"
+              continue
+            fi
             find media/videos/"$sur" -name "*.mp4" -not -path "*partial_movie_files*" -print0 |
               while IFS= read -r -d '' v; do cp "$v" "sortie/${sur}_$(basename "$v")"; done
           done < liste.txt
