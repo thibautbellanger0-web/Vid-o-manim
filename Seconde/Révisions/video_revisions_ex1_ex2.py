@@ -253,7 +253,11 @@ def puiss(exp, fs=56, base_col=WHITE):
     b = mx("10", base_col, fs)
     e = VGroup(*[mx(s, c, fs * 0.62) for s, c in exp]).arrange(RIGHT, buff=0.04)
     e.next_to(b, RIGHT, buff=0.05).align_to(b, UP).shift(UP * 0.2 * fs / 56)
-    return VGroup(b, e)
+    # cale invisible, symétrique de l'exposant : le CENTRE du groupe est celui du « 10 »,
+    # donc dans une ligne (row) le 10 reste à la hauteur du signe =
+    h = 2 * (e.get_top()[1] - b.get_center()[1])
+    cale = Rectangle(width=0.001, height=h, stroke_opacity=0, fill_opacity=0).move_to(b.get_center())
+    return VGroup(b, e, cale)
 
 
 def chiffres(s, fs=72, col=WHITE):
@@ -499,7 +503,7 @@ class Correction(Scene):
         cas = VGroup(tx("2 cas :", 26, WHITE, bold=True), tx("exposant positif", 26, EXP_P), tx("ou", 26, SOFT),
                      tx("exposant négatif", 26, EXP_N)).arrange(RIGHT, buff=0.3).next_to(idee, DOWN, buff=0.7)
         self.p(FadeIn(cas, shift=UP * 0.1), rt=0.8)
-        self.pause(0.3)
+        self.at(T["positif"] - 0.45)
         self.vider(garder=(self.cur_q,), rt=0.4)
 
     def ex1_positif(self):
@@ -523,6 +527,7 @@ class Correction(Scene):
             self.p(TransformFromCopy(p4[1], z, path_arc=-0.8), FadeIn(n, shift=UP * 0.1), rt=0.45)
         leg = txm(r"un 1 suivi de 4 zéros", 24, EXP_P).next_to(chif, UP, buff=0.35)
         self.p(FadeIn(leg), Circumscribe(chif, color=RES), rt=0.8)
+        self.at(T["negatif"] - 0.55)
         self.vider(garder=(self.cur_q,), rt=0.5)
 
     def ex1_negatif(self):
@@ -547,6 +552,7 @@ class Correction(Scene):
         self.p(Create(d), FadeIn(g0), FadeIn(g1), rt=0.8)
         self.p(FadeIn(zone_n), FadeIn(l_n), rt=0.6)
         self.p(FadeIn(zone_p), FadeIn(l_p), rt=0.6)
+        self.at(T["methode"] - 0.55)
         self.vider(garder=(self.cur_q, self.hdr_q), rt=0.5)
         # méthode avec 10^-3
         self.at(T["methode"])
@@ -575,6 +581,7 @@ class Correction(Scene):
             self.p(Indicate(z, color=EXP_N, scale_factor=1.3), FadeIn(n, shift=UP * 0.1), rt=0.6)
         n_av = tx("le zéro avant la virgule compte", 22, EXP_N).next_to(cpt, DOWN, buff=0.3).align_to(ch, LEFT)
         self.p(FadeIn(n_av, shift=UP * 0.1), Circumscribe(ch, color=RES), rt=0.9)
+        self.at(T["q3"] - 2.15)
         self.vider(garder=(self.cur_q,), rt=0.5)
 
     def ex1_reponses(self):
@@ -609,6 +616,7 @@ class Correction(Scene):
         self.at(T["laisse"])
         a_vous = tx("à vous !", 24, EXP_R, bold=True).next_to(L[5], DOWN, buff=0.35).align_to(L[5], LEFT)
         self.p(LaggedStart(FadeIn(L[4], shift=RIGHT * 0.2), FadeIn(L[5], shift=RIGHT * 0.2), lag_ratio=0.4), FadeIn(a_vous), rt=1.0)
+        self.at(T["ex2"] - 0.55)
         self.vider_tout(rt=0.5)
         self.cur_q = None
 
@@ -701,6 +709,7 @@ class Correction(Scene):
         self.at(T["C_res"])
         self.p(FadeIn(f2), TransformFromCopy(c1, c2), rt=0.8)
         self.p(Circumscribe(c2, color=RES), rt=0.6)
+        self.at(T["E"] - 0.55)
         self.vider(garder=(self.aide,), rt=0.5)
 
     def ex2_E(self):
@@ -738,6 +747,7 @@ class Correction(Scene):
                TransformFromCopy(m3[2][1], m3[4][1][2], path_arc=0.5), FadeIn(m3[4][1][1]), rt=1.2)
         self.p(FadeIn(m3[5]), TransformFromCopy(m3[4], m3[6]), rt=0.8)
         self.p(Circumscribe(m3[6], color=RES), rt=0.6)
+        self.at(T["F"] - 0.55)
         self.vider(garder=(self.aide,), rt=0.5)
 
     def ex2_F(self):
