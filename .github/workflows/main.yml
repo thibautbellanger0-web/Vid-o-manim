@@ -67,7 +67,7 @@ jobs:
         id: rendu
         run: |
           Q="${{ github.event.inputs.qualite }}"
-          [ -z "$Q" ] && Q="m"
+          [ -z "$Q" ] && Q="l"
           mkdir -p sortie travail
           while IFS= read -r f; do
             [ -f "$f" ] || { echo "Fichier introuvable : $f"; continue; }
