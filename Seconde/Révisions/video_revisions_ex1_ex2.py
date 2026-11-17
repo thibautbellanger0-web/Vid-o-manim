@@ -3,7 +3,7 @@ import math
 
 # =====================================================================
 #  Seconde – Révisions du collège : correction des exercices 1 et 2 (puissances de 10)
-#  Vidéo muette calée sur le SRT de l'enregistrement (≈ 3 min 20). Pas de 3D.
+#  Vidéo muette calée sur le SRT du 2e enregistrement (≈ 3 min 55 avec l'écran final). Pas de 3D.
 #  Manim Community, rendu sur GitHub.
 # =====================================================================
 
@@ -57,8 +57,12 @@ def val(num, unit, c=WHITE, fs=40):
     """Valeur + unité. unit : texte LaTeX ou tuple de morceaux (pour barrer un morceau).
     val(...)[0] = nombre ; val(...)[1] = unité ; val(...)[1][i] = i-ème morceau de l'unité."""
     parts = unit if isinstance(unit, tuple) else (unit,)
-    u = VGroup(*[mx(p, UNIT, fs) for p in parts]).arrange(RIGHT, buff=0.04)
-    return VGroup(mx(num, c, fs), u).arrange(RIGHT, buff=0.12)
+    # une seule formule LaTeX : nombre et unités restent sur la même ligne de base (s⁻¹ à la bonne hauteur)
+    m = MathTex(num + r"\,", *parts, font_size=fs)
+    m[0].set_color(c)
+    for k in range(1, len(parts) + 1):
+        m[k].set_color(UNIT)
+    return VGroup(m[0], VGroup(*[m[k] for k in range(1, len(parts) + 1)]))
 
 
 def frac(n, d, c=WHITE):
@@ -228,19 +232,19 @@ EXP_Q = "#FF8C42"    # second exposant (p)
 EXP_R = "#C77DFF"    # troisième exposant
 EXP_N = "#FF7B9C"    # exposant négatif
 
-# ---------- Minutage : d'après le SRT (TurboScribe) ----------
+# ---------- Minutage : d'après le SRT (TurboScribe, 2e enregistrement) ----------
 T = {
-    "titre": 0.65, "ex1": 4.81, "idee": 7.55, "zeros_apres": 11.35, "zeros_avant": 16.01,
-    "positif": 20.95, "autant": 28.15, "ex_10_4": 31.53, "dix_mille": 37.29,
-    "negatif": 39.31, "meme_chose": 49.01, "methode": 55.57, "prendre_exp": 59.47, "isoler": 62.63,
-    "trois_zeros": 69.79, "ex_10_m3": 72.33, "en_comptant": 78.19,
-    "liste": 82.31, "un_centieme": 85.19, "pas_tous": 87.71,
-    "ex2": 90.71, "regle_prod": 100.07, "additionne": 107.71, "regle_div": 113.51, "dessus": 118.0, "dessous": 122.45,
-    "regle_pp": 124.85, "n_fois_p": 133.19,
-    "A": 135.71, "A_somme": 141.79, "A_res": 143.3,
-    "B": 145.37, "B_somme": 153.01, "B_res": 155.73,
-    "C": 159.16, "C_dessus": 164.48, "C_diff": 167.0, "C_res": 170.0,
-    "F": 172.12, "F_num": 178.6, "F_trois": 181.32, "F_div": 185.28, "F_res": 188.0,
+    "titre": 0.52, "ex1": 6.08, "idee": 9.42, "deux_cas": 20.48,
+    "positif": 21.34, "un_puis_zeros": 27.30, "ex_10_4": 32.80,
+    "negatif": 40.42, "forme_0": 51.64, "entre_0_1": 57.46,
+    "methode": 62.54, "isoler": 69.40, "ecrire": 74.70, "compter": 78.36,
+    "q3": 84.48, "q4": 90.86, "q4_res": 99.28, "laisse": 103.66,
+    "ex2": 106.52, "regle_prod": 117.38, "additionne": 122.18, "regle_div": 127.32, "dessus": 131.22, "dessous": 133.58,
+    "regle_pp": 137.50, "n_fois_p": 142.92, "exemples": 147.52,
+    "A": 150.20, "A_somme": 152.12,
+    "C": 159.44, "C_diff": 162.98, "C_res": 170.20,
+    "E": 173.42, "E_imag": 180.34, "E_prop1": 184.84, "E_res": 187.22, "E_prop3": 191.04,
+    "F": 197.88, "F_num": 209.24, "F_trois": 212.92, "F_div": 214.44, "F_res": 219.86,
 }
 
 
@@ -436,8 +440,10 @@ class Correction(Scene):
         self.ex1_negatif()
         self.ex1_reponses()
         self.ex2_regles()
-        self.ex2_calculs()
-        self.ex2_bilan()
+        self.ex2_A_C()
+        self.ex2_E()
+        self.ex2_F()
+        self.bilan_final()
 
     # ---------- outils propres à cette vidéo ----------
     def changer_titre(self, s):
@@ -456,6 +462,13 @@ class Correction(Scene):
             out.add(tx(titre, 20, col, bold=True).next_to(cad, UP, buff=0.08).align_to(cad, LEFT))
         return out
 
+    def puiss_pp(self, inner, outer, fs=56):
+        """(10^inner)^outer ; [0] = parenthèse+puissance, [1] = exposant extérieur."""
+        dedans = row(mx("(", WHITE, fs), puiss(inner, fs), mx(")", WHITE, fs), buff=0.05)
+        e = VGroup(*[mx(s, c, fs * 0.62) for s, c in outer]).arrange(RIGHT, buff=0.04)
+        e.next_to(dedans, RIGHT, buff=0.04).align_to(dedans, UP).shift(UP * 0.1 * fs / 56)
+        return VGroup(dedans, e)
+
     # =================================================================
     #  TITRE
     # =================================================================
@@ -464,7 +477,7 @@ class Correction(Scene):
         t1 = tx("Révisions du collège", 54, WHITE, bold=True)
         t2 = tx("Correction · Exercices 1 et 2 : les puissances de 10", 30, PUIS_C)
         dec = VGroup(*[puiss([(s, c)], 44) for s, c in (("3", EXP_P), ("-2", EXP_N), ("6", EXP_P), ("0", SOFT))]).arrange(RIGHT, buff=1.0)
-        bloc = VGroup(t1, t2, dec).arrange(DOWN, buff=0.5)
+        VGroup(t1, t2, dec).arrange(DOWN, buff=0.5)
         self.p(Write(t1), rt=1.0)
         self.p(FadeIn(t2, shift=UP * 0.2), LaggedStart(*[FadeIn(d, shift=UP * 0.2) for d in dec], lag_ratio=0.2), rt=1.4)
         self.hdr_ex = tx("Exercice 1 : les puissances de 10", 22, SOFT).to_corner(UL, buff=0.3)
@@ -472,34 +485,32 @@ class Correction(Scene):
         self.p(ReplacementTransform(t1, self.hdr_ex), FadeOut(VGroup(t2, dec)), rt=0.6)
 
     # =================================================================
-    #  EXERCICE 1 – la méthode des zéros
+    #  EXERCICE 1
     # =================================================================
     def ex1_methode(self):
         self.at(T["ex1"])
         self.question("Compléter les égalités : écrire chaque puissance de 10 en nombre décimal, ou l'inverse.")
-        idee = tx("L'idée : compter le bon nombre de zéros.", 30, PUIS_C, bold=True).move_to(UP * 1.4)
         self.at(T["idee"])
-        self.p(Write(idee), rt=1.0)
-        l1 = row(puiss([("n", EXP_P)], 52), tx(": un 1 suivi de n zéros", 28, WHITE), buff=0.4)
-        l2 = row(puiss([("-n", EXP_N)], 52), tx(": n zéros en tout, puis le 1", 28, WHITE), buff=0.4)
-        VGroup(l1, l2).arrange(DOWN, aligned_edge=LEFT, buff=0.55).next_to(idee, DOWN, buff=0.7)
-        self.at(T["zeros_apres"])
-        self.p(FadeIn(l1, shift=RIGHT * 0.2), rt=0.8)
-        self.at(T["zeros_avant"])
-        self.p(FadeIn(l2, shift=RIGHT * 0.2), rt=0.8)
-        self.pause(1.0)
-        self.vider(garder=(self.cur_q,))
+        ex = row(puiss([("4", EXP_P)], 60), mx("=", WHITE, 60), mx(r"\,?", RES, 60), buff=0.3).move_to(UP * 0.8)
+        idee = tx("L'idée : écrire la valeur « en entier » de la puissance de 10.", 28, PUIS_C, bold=True).next_to(ex, DOWN, buff=0.6)
+        self.p(FadeIn(ex, shift=UP * 0.15), rt=0.8)
+        self.p(Write(idee), rt=1.2)
+        self.at(T["deux_cas"] - 2.9)
+        cas = VGroup(tx("2 cas :", 26, WHITE, bold=True), tx("exposant positif", 26, EXP_P), tx("ou", 26, SOFT),
+                     tx("exposant négatif", 26, EXP_N)).arrange(RIGHT, buff=0.3).next_to(idee, DOWN, buff=0.7)
+        self.p(FadeIn(cas, shift=UP * 0.1), rt=0.8)
+        self.pause(0.3)
+        self.vider(garder=(self.cur_q,), rt=0.4)
 
     def ex1_positif(self):
         self.at(T["positif"])
         self.set_q("Exposant positif")
         r = self.carte_regle([txm(r"Exposant positif : le nombre est supérieur à 1.", 28, WHITE),
-                              txm(r"Il y a autant de zéros que l'exposant.", 28, EXP_P)], EXP_P, "à retenir")
+                              txm(r"On écrit un 1, puis autant de zéros que l'exposant.", 28, EXP_P)], EXP_P, "à retenir")
         r.move_to(UP * 1.2)
         self.p(FadeIn(r[0]), FadeIn(r[2]), FadeIn(r[1][0], shift=UP * 0.1), rt=0.8)
-        self.at(T["autant"])
+        self.at(T["un_puis_zeros"])
         self.p(FadeIn(r[1][1], shift=UP * 0.1), rt=0.6)
-        # 10^4 = 10 000 : les zéros sortent un par un de l'exposant
         self.at(T["ex_10_4"])
         p4 = puiss([("4", EXP_P)], 72).move_to([-3.6, -1.4, 0])
         eg = mx("=", WHITE, 72).next_to(p4, RIGHT, buff=0.4)
@@ -507,93 +518,102 @@ class Correction(Scene):
         self.p(Write(p4), FadeIn(eg), rt=0.8)
         self.p(Indicate(p4[1], color=EXP_P, scale_factor=1.5), rt=0.8)
         self.p(FadeIn(chif[0], shift=UP * 0.2), rt=0.4)
-        cpt = VGroup()
         for i, z in enumerate(chif[1:]):
             n = mx(str(i + 1), EXP_P, 30).next_to(z, DOWN, buff=0.2)
-            cpt.add(n)
             self.p(TransformFromCopy(p4[1], z, path_arc=-0.8), FadeIn(n, shift=UP * 0.1), rt=0.45)
-        self.at(T["dix_mille"])
-        self.p(Circumscribe(chif, color=RES), rt=0.8)
-        self.vider(garder=(self.cur_q,))
+        leg = txm(r"un 1 suivi de 4 zéros", 24, EXP_P).next_to(chif, UP, buff=0.35)
+        self.p(FadeIn(leg), Circumscribe(chif, color=RES), rt=0.8)
+        self.vider(garder=(self.cur_q,), rt=0.5)
 
     def ex1_negatif(self):
         self.at(T["negatif"])
         self.set_q("Exposant négatif")
-        r = self.carte_regle([txm(r"Exposant négatif : le nombre est inférieur à 1, il s'écrit 0,…", 28, WHITE),
-                              txm(r"On écrit 0, puis des zéros, puis un 1.", 28, EXP_N)], EXP_N, "à retenir")
-        r.move_to(UP * 1.2)
+        r = self.carte_regle([txm(r"Exposant négatif : le nombre est inférieur à 1.", 28, WHITE),
+                              txm(r"Il s'écrit 0,… : il est compris entre 0 et 1.", 28, EXP_N)], EXP_N, "à retenir")
+        r.move_to(UP * 1.3)
         self.p(FadeIn(r[0]), FadeIn(r[2]), FadeIn(r[1][0], shift=UP * 0.1), rt=0.8)
-        self.at(T["meme_chose"])
+        self.at(T["forme_0"])
         self.p(FadeIn(r[1][1], shift=UP * 0.1), rt=0.6)
+        # droite graduée de 0 à 1 (puis de 1 à 10 000, en compressé)
+        self.at(T["entre_0_1"])
+        y = -1.3
+        d = Line([-5.5, y, 0], [5.5, y, 0], color=SOFT, stroke_width=2)
+        g0 = VGroup(Line([-5.0, y - 0.1, 0], [-5.0, y + 0.1, 0], color=WHITE), mx("0", WHITE, 32).next_to([-5.0, y - 0.1, 0], DOWN, buff=0.1))
+        g1 = VGroup(Line([0.0, y - 0.1, 0], [0.0, y + 0.1, 0], color=WHITE), mx("1", WHITE, 32).next_to([0.0, y - 0.1, 0], DOWN, buff=0.1))
+        zone_n = Rectangle(width=5.0, height=0.36, stroke_width=0, fill_color=EXP_N, fill_opacity=0.3).move_to([-2.5, y, 0])
+        zone_p = Rectangle(width=5.0, height=0.36, stroke_width=0, fill_color=EXP_P, fill_opacity=0.25).move_to([2.6, y, 0])
+        l_n = txm(r"exposant négatif : $0{,}\dots$", 22, EXP_N).next_to(zone_n, UP, buff=0.15)
+        l_p = txm(r"exposant positif : plus grand que 1", 22, EXP_P).next_to(zone_p, UP, buff=0.15)
+        self.p(Create(d), FadeIn(g0), FadeIn(g1), rt=0.8)
+        self.p(FadeIn(zone_n), FadeIn(l_n), rt=0.6)
+        self.p(FadeIn(zone_p), FadeIn(l_p), rt=0.6)
+        self.vider(garder=(self.cur_q, self.hdr_q), rt=0.5)
         # méthode avec 10^-3
         self.at(T["methode"])
-        p3 = puiss([("-", EXP_N), ("3", EXP_N)], 72).move_to([-3.8, -1.3, 0])
+        self.set_q("La méthode")
+        p3 = puiss([("-", EXP_N), ("3", EXP_N)], 72).move_to([-3.8, 0.6, 0])
         self.p(Write(p3), rt=0.8)
-        self.at(T["prendre_exp"])
         self.p(Indicate(p3[1], color=EXP_N, scale_factor=1.5), rt=0.8)
+        n_l = tx("négatif → 0,…", 22, EXP_N).next_to(p3, DOWN, buff=0.45)
+        self.p(p3[1][0].animate.set_color(SOFT).set_opacity(0.4), FadeIn(n_l, shift=UP * 0.1), rt=0.8)
         self.at(T["isoler"])
-        moins = p3[1][0]
-        n_l = tx("négatif → inférieur à 1", 20, EXP_N).next_to(p3, DOWN, buff=0.45)
-        self.p(moins.animate.set_color(SOFT).set_opacity(0.4), FadeIn(n_l, shift=UP * 0.1), rt=0.8)
         self.p(Indicate(p3[1][1], color=EXP_N, scale_factor=1.6), rt=0.8)
-        self.at(T["trois_zeros"])
         cible = tx("il faut 3 zéros en tout", 24, EXP_N).next_to(n_l, DOWN, buff=0.2)
         self.p(FadeIn(cible), rt=0.6)
-        # 10^-3 = 0,001
-        self.at(T["ex_10_m3"])
+        self.at(T["ecrire"])
         eg = mx("=", WHITE, 72).next_to(p3, RIGHT, buff=0.4)
         ch = chiffres("0,001", 72, WHITE).next_to(eg, RIGHT, buff=0.4)
-        self.p(FadeIn(eg), rt=0.3)
-        zeros = [ch[0], ch[2], ch[3]]
+        self.p(FadeIn(eg), FadeIn(ch[0]), FadeIn(ch[1]), rt=0.6)
+        self.p(FadeIn(ch[2]), rt=0.4)
+        self.p(FadeIn(ch[3]), rt=0.4)
+        self.p(FadeIn(ch[4]), rt=0.4)
+        self.at(T["compter"])
         cpt = VGroup()
-        for i, z in enumerate(zeros):
+        for i, z in enumerate([ch[0], ch[2], ch[3]]):
             n = mx(str(i + 1), EXP_N, 30).next_to(z, DOWN, buff=0.2)
             cpt.add(n)
-            anims = [TransformFromCopy(p3[1][1], z, path_arc=-0.8), FadeIn(n, shift=UP * 0.1)]
-            if i == 1:
-                anims.append(FadeIn(ch[1]))
-            self.p(*anims, rt=0.45)
-        self.p(FadeIn(ch[4], shift=UP * 0.2), rt=0.4)
-        self.at(T["en_comptant"])
-        self.p(Indicate(ch[0], color=EXP_N, scale_factor=1.4), Indicate(cpt[0], color=EXP_N), rt=1.0)
-        n_av = tx("le zéro avant la virgule compte !", 22, EXP_N).next_to(ch, UP, buff=0.45)
-        self.p(FadeIn(n_av, shift=UP * 0.1), rt=0.6)
-        self.p(Circumscribe(ch, color=RES), rt=0.8)
-        self.vider(garder=(self.cur_q,))
+            self.p(Indicate(z, color=EXP_N, scale_factor=1.3), FadeIn(n, shift=UP * 0.1), rt=0.6)
+        n_av = tx("le zéro avant la virgule compte", 22, EXP_N).next_to(cpt, DOWN, buff=0.3).align_to(ch, LEFT)
+        self.p(FadeIn(n_av, shift=UP * 0.1), Circumscribe(ch, color=RES), rt=0.9)
+        self.vider(garder=(self.cur_q,), rt=0.5)
 
     def ex1_reponses(self):
-        self.at(T["liste"])
+        self.at(T["q3"] - 1.6)
         self.set_q("Les réponses")
         fs = 46
+
         def eg(gauche, droite, num):
             return row(tx("%d)" % num, 26, SOFT), gauche, mx("=", WHITE, fs), droite, buff=0.3)
         L = [eg(puiss([("4", EXP_P)], fs), mx(r"10\,000", RES, fs), 1),
              eg(puiss([("-3", EXP_N)], fs), mx(r"0{,}001", RES, fs), 2),
              eg(mx(r"1\,000\,000", WHITE, fs), puiss([("6", RES)], fs, RES), 3),
              eg(mx(r"0{,}01", WHITE, fs), puiss([("-2", RES)], fs, RES), 4),
-             eg(mx(r"0{,}000\,1", WHITE, fs), puiss([("-4", RES)], fs, RES), 5),
-             eg(mx("1", WHITE, fs), puiss([("0", RES)], fs, RES), 6)]
-        col1 = VGroup(*L[:3]).arrange(DOWN, aligned_edge=LEFT, buff=0.5)
-        col2 = VGroup(*L[3:]).arrange(DOWN, aligned_edge=LEFT, buff=0.5)
+             eg(mx(r"0{,}000\,1", WHITE, fs), mx(r"10^{\,?}", EXP_R, fs), 5),
+             eg(mx("1", WHITE, fs), mx(r"10^{\,?}", EXP_R, fs), 6)]
+        col1 = VGroup(*L[:3]).arrange(DOWN, aligned_edge=LEFT, buff=0.55)
+        col2 = VGroup(*L[3:]).arrange(DOWN, aligned_edge=LEFT, buff=0.55)
         page = row(col1, col2, buff=1.6)
         self.caser(page, top=self.haut() - 0.4, x=0.0, w=12.0)
         self.p(FadeIn(L[0]), FadeIn(L[1]), rt=0.6)
-        self.p(FadeIn(L[2], shift=RIGHT * 0.2), rt=0.6)
+        self.at(T["q3"])
+        self.p(FadeIn(VGroup(L[2][0], L[2][1], L[2][2])), rt=0.5)
         c6 = tx("6 zéros", 20, EXP_P).next_to(L[2], DOWN, buff=0.12).align_to(L[2][1], LEFT)
-        self.p(FadeIn(c6), rt=0.4)
-        self.at(T["un_centieme"])
-        self.p(FadeIn(L[3], shift=RIGHT * 0.2), rt=0.6)
-        c2 = tx("2 zéros en tout", 20, EXP_N).next_to(L[3], DOWN, buff=0.12).align_to(L[3][1], LEFT)
-        self.p(FadeIn(c2), rt=0.4)
-        self.at(T["pas_tous"])
-        self.p(LaggedStart(FadeIn(L[4], shift=RIGHT * 0.2), FadeIn(L[5], shift=RIGHT * 0.2), lag_ratio=0.5), rt=1.2)
-        note = txm(r"$10^{0} = 1$ : aucun zéro.", 20, SOFT).next_to(page, DOWN, buff=0.4)
-        self.p(FadeIn(note), rt=0.4)
-        self.vider_tout()
+        self.p(FadeIn(c6), Indicate(L[2][1], color=EXP_P, scale_factor=1.05), rt=0.8)
+        self.p(FadeIn(L[2][3], shift=LEFT * 0.2), rt=0.6)
+        self.at(T["q4"])
+        self.p(FadeIn(VGroup(L[3][0], L[3][1], L[3][2])), rt=0.5)
+        c2 = tx("2 zéros, nombre inférieur à 1", 20, EXP_N).next_to(L[3], DOWN, buff=0.12).align_to(L[3][1], LEFT)
+        self.p(FadeIn(c2), Indicate(L[3][1], color=EXP_N, scale_factor=1.05), rt=0.8)
+        self.at(T["q4_res"])
+        self.p(FadeIn(L[3][3], shift=LEFT * 0.2), rt=0.6)
+        self.at(T["laisse"])
+        a_vous = tx("à vous !", 24, EXP_R, bold=True).next_to(L[5], DOWN, buff=0.35).align_to(L[5], LEFT)
+        self.p(LaggedStart(FadeIn(L[4], shift=RIGHT * 0.2), FadeIn(L[5], shift=RIGHT * 0.2), lag_ratio=0.4), FadeIn(a_vous), rt=1.0)
+        self.vider_tout(rt=0.5)
         self.cur_q = None
 
     # =================================================================
-    #  EXERCICE 2 – les règles de calcul
+    #  EXERCICE 2
     # =================================================================
     def ex2_regles(self):
         self.at(T["ex2"])
@@ -607,9 +627,8 @@ class Correction(Scene):
                  puiss([("n", EXP_P), ("+", WHITE), ("p", EXP_Q)], fs), buff=0.18)
         r2 = row(frac(puiss([("n", EXP_P)], fs), puiss([("p", EXP_Q)], fs)), mx("=", WHITE, fs),
                  puiss([("n", EXP_P), ("-", WHITE), ("p", EXP_Q)], fs), buff=0.18)
-        r3 = row(mx("(", WHITE, fs), puiss([("n", EXP_P)], fs), mx(")", WHITE, fs), buff=0.05)
-        exp_p = mx("p", EXP_Q, fs * 0.62).next_to(r3, RIGHT, buff=0.04).align_to(r3, UP).shift(UP * 0.12)
-        r3 = row(VGroup(r3, exp_p), mx("=", WHITE, fs), puiss([("n", EXP_P), (r"\times", WHITE), ("p", EXP_Q)], fs), buff=0.18)
+        r3 = row(self.puiss_pp([("n", EXP_P)], [("p", EXP_Q)], fs), mx("=", WHITE, fs),
+                 puiss([("n", EXP_P), (r"\times", WHITE), ("p", EXP_Q)], fs), buff=0.18)
         c1 = tx("on multiplie → on additionne les exposants", 22, WHITE)
         c2 = tx("on divise → exposant du dessus moins exposant du dessous", 22, WHITE)
         c3 = tx("puissance d'une puissance → on multiplie les exposants", 22, WHITE)
@@ -624,7 +643,7 @@ class Correction(Scene):
         self.at(T["additionne"])
         self.p(FadeIn(lignes[0][1], shift=LEFT * 0.2), Indicate(lignes[0][0][4][1], color=RES, scale_factor=1.3), rt=1.0)
         self.at(T["regle_div"])
-        self.p(Write(lignes[1][0]), rt=1.6)
+        self.p(Write(lignes[1][0]), rt=1.4)
         self.at(T["dessus"])
         self.p(Indicate(lignes[1][0][0][0][1], color=EXP_P, scale_factor=1.5), rt=0.8)
         self.at(T["dessous"])
@@ -633,85 +652,104 @@ class Correction(Scene):
         self.p(Write(lignes[2][0]), rt=1.6)
         self.at(T["n_fois_p"])
         self.p(FadeIn(lignes[2][1], shift=LEFT * 0.2), Indicate(lignes[2][0][2][1], color=RES, scale_factor=1.3), rt=1.0)
-        self.lignes_regles = lignes
-
-    def ex2_calculs(self):
-        self.at(T["A"] - 0.8)
-        # les règles se rangent en petit en haut à droite
-        mini = VGroup(*[l[0].copy() for l in self.lignes_regles]).arrange(DOWN, aligned_edge=LEFT, buff=0.25).scale(0.5)
+        # les règles se rangent en aide-mémoire
+        self.at(T["exemples"])
+        mini = VGroup(*[l[0].copy() for l in lignes]).arrange(DOWN, aligned_edge=LEFT, buff=0.25).scale(0.5)
         cad = SurroundingRectangle(mini, color=SOFT, buff=0.15, corner_radius=0.1, stroke_width=1.5)
-        aide = VGroup(cad, mini).to_corner(UR, buff=0.3).shift(DOWN * 0.5)
-        self.p(FadeOut(self.cur_q), FadeOut(VGroup(*[l[1] for l in self.lignes_regles])),
-               ReplacementTransform(VGroup(*[l[0] for l in self.lignes_regles]), mini), FadeIn(cad), rt=0.8)
+        self.aide = VGroup(cad, mini).to_corner(UR, buff=0.3).shift(DOWN * 0.5)
+        self.p(FadeOut(self.cur_q), FadeOut(VGroup(*[l[1] for l in lignes])),
+               ReplacementTransform(VGroup(*[l[0] for l in lignes]), mini), FadeIn(cad), rt=0.8)
         self.cur_q = None
-        fs = 56
-        x_g = -6.3
 
-        def ligne(nom, *morceaux, y):
-            g = row(mx(nom, WHITE, fs), mx("=", WHITE, fs), *morceaux, buff=0.2)
-            g.move_to([x_g, y, 0], aligned_edge=LEFT)
-            return g
-        # A
+    def ligne(self, nom, *morceaux, y, fs=56):
+        g = row(mx(nom, WHITE, fs), mx("=", WHITE, fs), *morceaux, buff=0.2)
+        g.move_to([-6.3, y, 0], aligned_edge=LEFT)
+        return g
+
+    def ex2_A_C(self):
+        fs = 56
+        self.at(T["A"])
         self.set_q("A")
-        a0 = ligne("A", puiss([("2", EXP_P)], fs), mx(r"\times", WHITE, fs), puiss([("5", EXP_Q)], fs), y=2.0)
+        a0 = self.ligne("A", puiss([("2", EXP_P)], fs), mx(r"\times", WHITE, fs), puiss([("5", EXP_Q)], fs), y=1.6)
         self.p(Write(a0), rt=1.0)
         a1 = puiss([("2", EXP_P), ("+", WHITE), ("5", EXP_Q)], fs)
         a2 = puiss([("7", RES)], fs, RES)
         eg1, eg2 = mx("=", WHITE, fs), mx("=", WHITE, fs)
-        suite = row(eg1, a1, eg2, a2, buff=0.2).next_to(a0, RIGHT, buff=0.2)
+        row(eg1, a1, eg2, a2, buff=0.25).next_to(a0, RIGHT, buff=0.2)
         self.at(T["A_somme"])
         self.p(FadeIn(eg1), FadeIn(a1[0]), TransformFromCopy(a0[2][1], a1[1][0], path_arc=-0.6),
                TransformFromCopy(a0[4][1], a1[1][2], path_arc=-0.6), FadeIn(a1[1][1]), rt=1.2)
-        self.at(T["A_res"])
+        mult = tx("multiplication → on additionne", 20, SOFT).next_to(a1, DOWN, buff=0.25)
+        self.p(FadeIn(mult), rt=0.5)
         self.p(FadeIn(eg2), TransformFromCopy(a1, a2), rt=0.9)
         self.p(Circumscribe(a2, color=RES), rt=0.7)
-        # B
-        self.at(T["B"])
-        self.set_q("B")
-        b0 = ligne("B", puiss([("-2", EXP_P)], fs), mx(r"\times", WHITE, fs), puiss([("-4", EXP_Q)], fs), y=0.55)
-        self.p(Write(b0), rt=1.0)
-        b1 = puiss([("-2", EXP_P), ("+", WHITE), ("(-4)", EXP_Q)], fs)
-        b2 = puiss([("-6", RES)], fs, RES)
-        e1, e2 = mx("=", WHITE, fs), mx("=", WHITE, fs)
-        row(e1, b1, e2, b2, buff=0.3).next_to(b0, RIGHT, buff=0.2)
-        self.at(T["B_somme"])
-        self.p(FadeIn(e1), FadeIn(b1[0]), TransformFromCopy(b0[2][1], b1[1][0], path_arc=-0.6),
-               TransformFromCopy(b0[4][1], b1[1][2], path_arc=-0.6), FadeIn(b1[1][1]), rt=1.2)
-        rap = txm(r"$-2 + (-4) = -2 - 4 = -6$", 24, SOFT).next_to(b1, DOWN, buff=0.25)
-        self.at(T["B_res"])
-        self.p(FadeIn(rap, shift=UP * 0.1), rt=0.6)
-        self.p(FadeIn(e2), TransformFromCopy(b1, b2), rt=0.9)
-        self.p(Circumscribe(b2, color=RES), rt=0.7)
         # C
         self.at(T["C"])
         self.set_q("C")
         c0 = row(mx("C", WHITE, fs), mx("=", WHITE, fs), frac(puiss([("8", EXP_P)], fs), puiss([("3", EXP_Q)], fs)), buff=0.2)
-        c0.move_to([x_g, -1.55, 0], aligned_edge=LEFT)
-        self.p(FadeOut(rap), Write(c0), rt=1.0)
+        c0.move_to([-6.3, -1.3, 0], aligned_edge=LEFT)
+        self.p(Write(c0), rt=1.0)
         c1 = puiss([("8", EXP_P), ("-", WHITE), ("3", EXP_Q)], fs)
         c2 = puiss([("5", RES)], fs, RES)
         f1, f2 = mx("=", WHITE, fs), mx("=", WHITE, fs)
-        row(f1, c1, f2, c2, buff=0.2).next_to(c0, RIGHT, buff=0.2)
-        self.at(T["C_dessus"])
-        self.p(Indicate(c0[2][0][1], color=EXP_P, scale_factor=1.5), rt=0.6)
-        self.p(Indicate(c0[2][2][1], color=EXP_Q, scale_factor=1.5), rt=0.6)
+        row(f1, c1, f2, c2, buff=0.25).next_to(c0, RIGHT, buff=0.2)
         self.at(T["C_diff"])
         self.p(FadeIn(f1), FadeIn(c1[0]), TransformFromCopy(c0[2][0][1], c1[1][0], path_arc=-0.6),
                TransformFromCopy(c0[2][2][1], c1[1][2], path_arc=0.6), FadeIn(c1[1][1]), rt=1.2)
+        self.p(Indicate(c1[1][0], color=EXP_P, scale_factor=1.4), rt=0.6)
+        self.p(Indicate(c1[1][2], color=EXP_Q, scale_factor=1.4), rt=0.6)
         self.at(T["C_res"])
         self.p(FadeIn(f2), TransformFromCopy(c1, c2), rt=0.8)
         self.p(Circumscribe(c2, color=RES), rt=0.6)
-        self.vider(garder=(aide,))
-        # F : le cas qui rassemble tout
+        self.vider(garder=(self.aide,), rt=0.5)
+
+    def ex2_E(self):
+        fs = 56
+        self.at(T["E"])
+        self.set_q("E")
+        e0 = self.ligne("E", self.puiss_pp([("-3", EXP_P)], [("2", EXP_Q)], fs), y=1.6)
+        self.p(Write(e0), rt=1.0)
+        self.p(Indicate(e0[2][1], color=EXP_Q, scale_factor=1.6), rt=0.7)
+        car = tx("« au carré » : 2 fois le même facteur", 20, SOFT).next_to(e0, DOWN, buff=0.25).align_to(e0[2], LEFT)
+        self.p(FadeIn(car), rt=0.5)
+        # méthode 1 : on revient à un produit
+        self.at(T["E_imag"])
+        m1 = row(mx("=", WHITE, fs), puiss([("-3", EXP_P)], fs), mx(r"\times", WHITE, fs), puiss([("-3", EXP_P)], fs), buff=0.2)
+        m1.next_to(e0, RIGHT, buff=0.25)
+        self.p(FadeIn(m1[0]), TransformFromCopy(e0[2][0][1], m1[1]), TransformFromCopy(e0[2][0][1], m1[3]), FadeIn(m1[2]), rt=1.2)
+        self.at(T["E_prop1"])
+        m2 = row(mx("=", WHITE, fs), puiss([("-3", EXP_P), ("+", WHITE), ("(-3)", EXP_P)], fs), mx("=", WHITE, fs),
+                 puiss([("-6", RES)], fs, RES), buff=0.25)
+        m2.move_to([-4.6, 0.1, 0], aligned_edge=LEFT)
+        l1 = tx("1re règle : on additionne", 20, SOFT).next_to(m2, DOWN, buff=0.2).align_to(m2, LEFT)
+        self.p(FadeOut(car), FadeIn(m2[0]), FadeIn(m2[1][0]), TransformFromCopy(m1[1][1], m2[1][1][0], path_arc=-0.5),
+               TransformFromCopy(m1[3][1], m2[1][1][2], path_arc=-0.5), FadeIn(m2[1][1][1]), FadeIn(l1), rt=1.2)
+        self.at(T["E_res"])
+        self.p(FadeIn(m2[2]), TransformFromCopy(m2[1], m2[3]), rt=0.8)
+        self.p(Circumscribe(m2[3], color=RES), rt=0.6)
+        # méthode 2 : la 3e règle directement
+        self.at(T["E_prop3"])
+        m3 = row(mx("E", WHITE, fs), mx("=", WHITE, fs), self.puiss_pp([("-3", EXP_P)], [("2", EXP_Q)], fs), mx("=", WHITE, fs),
+                 puiss([("-3", EXP_P), (r"\times", WHITE), ("2", EXP_Q)], fs), mx("=", WHITE, fs), puiss([("-6", RES)], fs, RES), buff=0.22)
+        m3.move_to([-6.3, -1.9, 0], aligned_edge=LEFT)
+        l3 = tx("ou directement, avec la 3e règle :", 20, SOFT).next_to(m3, UP, buff=0.2).align_to(m3, LEFT)
+        self.p(FadeIn(l3), FadeIn(m3[:3]), rt=0.6)
+        self.p(FadeIn(m3[3]), FadeIn(m3[4][0]), TransformFromCopy(m3[2][0][1][1], m3[4][1][0], path_arc=-0.5),
+               TransformFromCopy(m3[2][1], m3[4][1][2], path_arc=0.5), FadeIn(m3[4][1][1]), rt=1.2)
+        self.p(FadeIn(m3[5]), TransformFromCopy(m3[4], m3[6]), rt=0.8)
+        self.p(Circumscribe(m3[6], color=RES), rt=0.6)
+        self.vider(garder=(self.aide,), rt=0.5)
+
+    def ex2_F(self):
+        fs = 56
         self.at(T["F"])
         self.set_q("F")
         num = row(puiss([("5", EXP_P)], fs), mx(r"\times", WHITE, fs), puiss([("-2", EXP_Q)], fs), buff=0.15)
         F0 = row(mx("F", WHITE, fs), mx("=", WHITE, fs), frac(num, puiss([("4", EXP_R)], fs)), buff=0.2)
-        F0.move_to([x_g, 0.9, 0], aligned_edge=LEFT)
+        F0.move_to([-6.3, 0.9, 0], aligned_edge=LEFT)
         self.p(Write(F0), rt=1.4)
         tout = tx("on applique les règles une par une", 22, SOFT).next_to(F0, DOWN, buff=0.3).align_to(F0, LEFT)
         self.p(FadeIn(tout), rt=0.5)
-        # étape 1 : le numérateur
         self.at(T["F_num"])
         n1 = puiss([("5", EXP_P), ("+", WHITE), ("(-2)", EXP_Q)], fs)
         F1 = row(mx("=", WHITE, fs), frac(n1, puiss([("4", EXP_R)], fs)), buff=0.2).next_to(F0, RIGHT, buff=0.25)
@@ -721,37 +759,48 @@ class Correction(Scene):
                TransformFromCopy(F0[2][2], F1[1][2]), rt=1.2)
         self.at(T["F_trois"])
         F2 = row(mx("=", WHITE, fs), frac(puiss([("3", EXP_P)], fs), puiss([("4", EXP_R)], fs)), buff=0.2)
-        F2.move_to([x_g + 1.2, -1.6, 0], aligned_edge=LEFT)
-        self.p(FadeOut(tout), FadeIn(F2[0]), TransformFromCopy(F1[1], F2[1]), rt=1.0)
-        # étape 2 : la division
+        F2.move_to([-5.1, -1.6, 0], aligned_edge=LEFT)
+        self.p(FadeOut(tout), FadeIn(F2[0]), TransformFromCopy(F1[1], F2[1]), rt=0.9)
         self.at(T["F_div"])
         F3 = row(mx("=", WHITE, fs), puiss([("3", EXP_P), ("-", WHITE), ("4", EXP_R)], fs), mx("=", WHITE, fs),
-                 puiss([("-1", RES)], fs, RES), buff=0.2).next_to(F2, RIGHT, buff=0.25)
+                 puiss([("-1", RES)], fs, RES), buff=0.25).next_to(F2, RIGHT, buff=0.25)
         self.p(FadeIn(F3[0]), FadeIn(F3[1][0]), TransformFromCopy(F2[1][0][1], F3[1][1][0], path_arc=-0.6),
                TransformFromCopy(F2[1][2][1], F3[1][1][2], path_arc=0.6), FadeIn(F3[1][1][1]), rt=1.2)
         self.at(T["F_res"])
         self.p(FadeIn(F3[2]), TransformFromCopy(F3[1], F3[3]), rt=0.8)
         self.p(Circumscribe(F3[3], color=RES), rt=0.7)
-        self.pause(1.2)
-        self.vider()
+        self.pause(1.0)
+        self.vider(rt=0.5)
 
-    def ex2_bilan(self):
-        self.set_q("Toutes les réponses")
-        fs = 44
-        lig = [("A", [puiss([("2", EXP_P), ("+", WHITE), ("5", EXP_Q)], fs)], puiss([("7", RES)], fs, RES)),
-               ("B", [puiss([("-2", EXP_P), ("+", WHITE), ("(-4)", EXP_Q)], fs)], puiss([("-6", RES)], fs, RES)),
-               ("C", [puiss([("8", EXP_P), ("-", WHITE), ("3", EXP_Q)], fs)], puiss([("5", RES)], fs, RES)),
-               ("D", [puiss([("3", EXP_P), ("-", WHITE), ("(-2)", EXP_Q)], fs)], puiss([("5", RES)], fs, RES)),
-               ("E", [puiss([("-3", EXP_P), (r"\times", WHITE), ("2", EXP_Q)], fs)], puiss([("-6", RES)], fs, RES)),
-               ("F", [puiss([("3", EXP_P), ("-", WHITE), ("4", EXP_R)], fs)], puiss([("-1", RES)], fs, RES))]
-        rows = []
-        for nom, mid, res in lig:
-            rows.append(row(mx(nom, WHITE, fs), mx("=", WHITE, fs), *mid, mx("=", WHITE, fs), res, buff=0.25))
-        col1 = VGroup(*rows[:3]).arrange(DOWN, aligned_edge=LEFT, buff=0.45)
-        col2 = VGroup(*rows[3:]).arrange(DOWN, aligned_edge=LEFT, buff=0.45)
-        page = row(col1, col2, buff=1.6)
-        self.caser(page, top=2.3, x=0.0, w=12.4)
-        self.p(LaggedStart(*[FadeIn(r, shift=RIGHT * 0.2) for r in rows], lag_ratio=0.25), rt=2.2)
-        note = tx("D et E : à refaire seuls, puis vérifier ici.", 22, SOFT).next_to(page, DOWN, buff=0.5)
-        self.p(FadeIn(note), Indicate(rows[3], color=EXP_Q, scale_factor=1.04), Indicate(rows[4], color=EXP_Q, scale_factor=1.04), rt=1.2)
-        self.pause(4.0)
+    # =================================================================
+    #  ÉCRAN FINAL (muet) : toutes les réponses pour vérifier
+    # =================================================================
+    def bilan_final(self):
+        self.set_q("Vérifiez vos réponses")
+        fs = 40
+        ex1 = VGroup(*[row(tx("%d)" % k, 22, SOFT), g, mx("=", WHITE, fs), d, buff=0.22) for k, g, d in (
+            (1, puiss([("4", EXP_P)], fs), mx(r"10\,000", RES, fs)),
+            (2, puiss([("-3", EXP_N)], fs), mx(r"0{,}001", RES, fs)),
+            (3, mx(r"1\,000\,000", WHITE, fs), puiss([("6", RES)], fs, RES)),
+            (4, mx(r"0{,}01", WHITE, fs), puiss([("-2", RES)], fs, RES)),
+            (5, mx(r"0{,}000\,1", WHITE, fs), puiss([("-4", RES)], fs, RES)),
+            (6, mx("1", WHITE, fs), puiss([("0", RES)], fs, RES)))]).arrange(DOWN, aligned_edge=LEFT, buff=0.3)
+        lig = [("A", puiss([("2", EXP_P), ("+", WHITE), ("5", EXP_Q)], fs), puiss([("7", RES)], fs, RES)),
+               ("B", puiss([("-2", EXP_P), ("+", WHITE), ("(-4)", EXP_Q)], fs), puiss([("-6", RES)], fs, RES)),
+               ("C", puiss([("8", EXP_P), ("-", WHITE), ("3", EXP_Q)], fs), puiss([("5", RES)], fs, RES)),
+               ("D", puiss([("3", EXP_P), ("-", WHITE), ("(-2)", EXP_Q)], fs), puiss([("5", RES)], fs, RES)),
+               ("E", puiss([("-3", EXP_P), (r"\times", WHITE), ("2", EXP_Q)], fs), puiss([("-6", RES)], fs, RES)),
+               ("F", puiss([("3", EXP_P), ("-", WHITE), ("4", EXP_R)], fs), puiss([("-1", RES)], fs, RES))]
+        ex2 = VGroup(*[row(mx(n, WHITE, fs), mx("=", WHITE, fs), m, mx("=", WHITE, fs), r, buff=0.22) for n, m, r in lig]
+                     ).arrange(DOWN, aligned_edge=LEFT, buff=0.3)
+        t1 = tx("Exercice 1", 24, PUIS_C, bold=True)
+        t2 = tx("Exercice 2", 24, PUIS_C, bold=True)
+        g1 = VGroup(t1, ex1).arrange(DOWN, aligned_edge=LEFT, buff=0.3)
+        g2 = VGroup(t2, ex2).arrange(DOWN, aligned_edge=LEFT, buff=0.3)
+        page = row(g1, g2, buff=1.6)
+        self.caser(page, top=2.9, x=0.0, w=12.4)
+        self.p(FadeIn(t1), FadeIn(t2), rt=0.5)
+        self.p(LaggedStart(*[FadeIn(r, shift=RIGHT * 0.15) for r in list(ex1) + list(ex2)], lag_ratio=0.12), rt=2.4)
+        self.p(*[Indicate(ex1[k], color=EXP_R, scale_factor=1.04) for k in (4, 5)],
+               *[Indicate(ex2[k], color=EXP_R, scale_factor=1.04) for k in (1, 3)], rt=1.2)
+        self.pause(5.0)
