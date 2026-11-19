@@ -232,31 +232,6 @@ EXP_Q = "#FF8C42"    # second exposant (p)
 EXP_R = "#C77DFF"    # troisième exposant
 EXP_N = "#FF7B9C"    # exposant négatif
 
-# ---------- Minutage : début de chaque passage lu, d'après le SRT ----------
-T = {
-    "titre": 0.84, "ex1": 8.90, "photon": 17.20,
-    "q1": 22.96, "q1_lit": 27.32, "q1_don": 34.78, "q1_an": 36.92, "q1_bar": 40.38,
-    "q1_res": 44.86, "q1_rep": 48.50,
-    "q2": 49.60, "q2_rel": 57.44, "nu_rel": 69.36, "nu_lit": 78.12, "nu_an": 83.66,
-    "nu_bar": 87.90, "nu_res": 89.98, "nu_rep": 91.00,
-    "lam_lit": 105.88, "lam_box": 109.60, "lam_an": 114.88,
-    "lam_res": 122.78, "lam_conv": 126.88, "lam_don": 131.00, "lam_rep": 133.00,
-    "q3": 135.20, "q3_bande": 142.24, "q3_ir": 152.30, "q3_366": 153.74, "q3_rep": 157.46,
-    "ex2": 160.48, "q_ex2": 170.32, "q1b_bande": 181.82, "q1b_lit": 194.64, "q1b_rap": 197.74,
-    "q1b_an": 208.68, "q1b_res": 214.16, "q1b_att": 217.04, "q1b_conv": 231.28,
-    "q1b_an2": 234.26, "q1b_res2": 239.88, "q1b_rep": 242.66, "q1b_diag": 244.18,
-    "q1b_arrow": 251.14, "q1b_rep2": 258.26,
-    "q2b": 262.80, "q2b_note": 272.44, "q2b_diag": 280.66, "q2b_fl": 286.00, "q2b_lit": 290.46,
-    "q2b_an": 294.72, "q2b_res": 298.32, "q2b_jlit": 302.32, "q2b_jan": 304.50, "q2b_jres": 306.66,
-    "q2b_rep": 311.42,
-    "q3b": 318.34, "q3b_lit": 342.70, "q3b_an": 349.60, "q3b_res": 351.80, "q3b_conv": 354.20,
-    "q3b_rep": 368.42,
-    "q4": 369.40, "q4_idee": 378.74, "q4_diag": 387.66, "q4_cond": 394.80, "q4_photon": 402.54,
-    "q4_fl": 409.08, "q4_296": 410.50, "q4_reste": 419.16, "q4_calc": 426.76, "q4_lit": 437.28,
-    "q4_an": 442.80, "q4_res": 446.30, "q4_conv": 448.68, "q4_titre": 456.24, "q4_ecarts": 459.00,
-    "q4_cmp": 467.90, "q4_rep": 478.34,
-}
-
 def puiss(exp, fs=56, base_col=WHITE):
     """10 puissance (exposant) ; exp = liste de (texte LaTeX, couleur). [0] = « 10 », [1] = exposant (morceaux indexables)."""
     b = mx("10", base_col, fs)
@@ -287,6 +262,32 @@ def chiffres(s, fs=72, col=WHITE):
         g.add(m)
     return g
 
+
+# ---------- Minutage : début de chaque passage lu, d'après le SRT ----------
+T = {
+    "titre": 0.84, "ex1": 8.90, "photon": 17.20,
+    "q1": 22.96, "q1_lit": 27.32, "q1_an1": 29.34, "q1_don": 34.78, "q1_an2": 36.92,
+    "q1_res": 44.86, "q1_rep": 48.50,
+    "q2": 49.60, "q2_rel": 57.44, "nu_rel": 69.36, "nu_lit": 78.12, "nu_an": 83.66,
+    "nu_bar": 87.90, "nu_res": 89.98, "nu_rep": 91.00,
+    "lam_lit": 105.88, "lam_box": 109.60, "lam_an": 114.88, "lam_bar": 117.60,
+    "lam_res": 122.78, "lam_conv": 126.88, "lam_don": 131.00, "lam_rep": 133.00,
+    "q3": 135.20, "q3_bande": 142.24, "q3_ir": 152.30, "q3_rad": 153.74, "q3_rep": 157.46,
+    "ex2": 160.48, "q_ex2": 170.32, "q1b_bande": 181.82, "q1b_lit": 194.64, "q1b_rap": 197.74,
+    "q1b_an": 208.68, "q1b_res": 214.16, "q1b_att": 217.04,
+    "q1b_conv": 231.28, "q1b_an2": 234.26, "q1b_div": 237.46, "q1b_bar2": 239.10, "q1b_res2": 239.88,
+    "q1b_rep": 242.66, "q1b_diag": 244.18, "q1b_arrow": 251.14, "q1b_rep2": 258.26,
+    "q2b": 262.80, "q2b_note": 272.44, "q2b_diag": 280.66, "q2b_fl": 286.00, "q2b_lit": 290.46,
+    "q2b_an": 294.72, "q2b_res": 298.32, "q2b_jlit": 302.32, "q2b_jan": 304.50, "q2b_jan2": 306.66,
+    "q2b_jres": 308.60, "q2b_rep": 311.42,
+    "q3b": 318.34, "q3b_lit": 342.70, "q3b_an": 349.60, "q3b_res": 351.80, "q3b_conv": 354.20,
+    "q3b_rep": 368.42,
+    "q4": 369.40, "q4_idee": 378.74, "q4_diag": 387.66, "q4_cond": 394.80, "q4_photon": 402.54,
+    "q4_fl": 409.08, "q4_296": 410.50, "q4_reste": 419.16, "q4_calc": 426.76, "q4_lit": 437.28,
+    "q4_an": 442.80, "q4_bar": 446.00, "q4_res": 446.50, "q4_conv": 448.00, "q4_conv_an": 450.20,
+    "q4_conv_bar": 451.80, "q4_conv_res": 452.30,
+    "q4_titre": 456.24, "q4_ecarts": 459.00, "q4_cmp": 469.66, "q4_rep": 478.34,
+}
 
 # ---------- Diagramme des niveaux du calcium (valeurs données à l'oral, E1 pris comme référence) ----------
 EN = {1: 0.0, 2: 1.88, 3: 2.94, 4: 4.68}
@@ -333,8 +334,8 @@ def bande_spectre():
     hors = VGroup(
         Rectangle(width=2.0, height=0.7, stroke_width=0, fill_color="#3A3F4B", fill_opacity=1).move_to([xnm(350), 0.2, 0]),
         Rectangle(width=2.0, height=0.7, stroke_width=0, fill_color="#3A3F4B", fill_opacity=1).move_to([xnm(850), 0.2, 0]),
-        tx("Ultraviolets", 20, SOFT).move_to([-5.3, -0.5, 0]),
-        tx("Infrarouges", 20, SOFT).move_to([5.3, -0.5, 0]))
+        tx("Ultraviolets", 20, SOFT).move_to([-5.3, -1.25, 0]),
+        tx("Infrarouges", 20, SOFT).move_to([5.3, -1.25, 0]))
     return vis, hors
 
 
@@ -344,7 +345,6 @@ def repere(nm, texte, c):
     return VGroup(fl, tx(texte, 22, c).move_to([xnm(nm), 1.9, 0]))
 
 
-# =====================================================================
 class Correction(Scene):
     # ---------------- Calage sur l'audio ----------------
     def p(self, *anims, rt=1.0, **kw):
@@ -532,29 +532,35 @@ class Correction(Scene):
         self.p(FadeOut(carte_e), rt=0.5)
 
         # ---------- Exercice 1, question 1 : conversion en joules ----------
+        # Principe : écrire la valeur × 1 eV, puis remplacer 1 eV par sa valeur en joules.
         self.at(T["q1"])
         self.set_q("Ex. 1 · Q1")
         self.question([r"Convertir en joules l'énergie du photon, $E = 3{,}40\ \mathrm{eV}$."])
-        LIT = row(mx(r"\Delta E", WHITE, 40), mx("=", WHITE, 40), mx("E", WHITE, 40), mx(r"\times", WHITE, 40),
-                  mx(r"1{,}60\times10^{-19}\ \mathrm{J\cdot eV^{-1}}", WHITE, 40))
-        DON = row(tx("Donnée :", 24, SOFT), mx(r"1\ \mathrm{eV}", WHITE, 36), mx("=", WHITE, 36),
-                  mx(r"1{,}60\times10^{-19}\ \mathrm{J}", WHITE, 36))
-        AN = row(mx(r"\Delta E", WHITE, 40), mx("=", WHITE, 40), val("3{,}40", r"\mathrm{eV}", WHITE, 40),
-                 mx(r"\times", WHITE, 40),
-                 val(r"1{,}60\times10^{-19}", (r"\mathrm{J\cdot}", r"\mathrm{eV}^{-1}"), WHITE, 40))
-        RR = row(mx(r"\Delta E", WHITE, 40), mx("=", WHITE, 40), val(r"5{,}44\times10^{-19}", r"\mathrm{J}", RES, 40))
-        page = VGroup(LIT, DON, AN, RR).arrange(DOWN, aligned_edge=LEFT, buff=0.7)
-        self.caser(page, top=self.haut() - 0.6)
+        LIT = row(mx(r"\Delta E", WHITE, 54), mx("=", WHITE, 54), mx("E", WHITE, 54), mx(r"\times", WHITE, 54),
+                  mx(r"1\ \mathrm{eV}", WHITE, 54))
+        AN1 = row(mx(r"\Delta E", WHITE, 48), mx("=", WHITE, 48), mx(r"3{,}40", WHITE, 48), mx(r"\times", WHITE, 48),
+                  mx(r"1\ \mathrm{eV}", WHITE, 48))
+        DON = row(tx("Donnée :", 24, SOFT), mx(r"1\ \mathrm{eV} = 1{,}60\times10^{-19}\ \mathrm{J}", WHITE, 40))
+        AN2 = row(mx(r"\Delta E", WHITE, 48), mx("=", WHITE, 48), mx(r"3{,}40", WHITE, 48), mx(r"\times", WHITE, 48),
+                  mx(r"1{,}60\times10^{-19}\ \mathrm{J}", WHITE, 48))
+        RR = row(mx(r"\Delta E", WHITE, 54), mx("=", WHITE, 54), val(r"5{,}44\times10^{-19}", r"\mathrm{J}", RES, 54))
+        pg = VGroup(LIT, AN1, DON).arrange(DOWN, aligned_edge=LEFT, buff=0.85)
+        self.caser(pg, top=self.haut() - 0.6)
         self.at(T["q1_lit"])
         self.p(Write(LIT), rt=1.0)
         self.encadre(LIT)
+        self.at(T["q1_an1"])
+        self.p(Write(AN1), rt=1.2)
+        self.tag_an(AN1)
         self.at(T["q1_don"])
         self.p(FadeIn(DON, shift=UP * 0.1), rt=0.8)
-        self.at(T["q1_an"])
-        self.p(Write(AN), rt=1.2)
-        self.tag_an(AN)
-        self.at(T["q1_bar"])
-        self.barrer(AN[2][1], AN[4][1][1])
+        self.at(T["q1_an2"] - 0.5)
+        self.vider(rt=0.4, garder=(self.cur_q,))
+        pg = VGroup(AN2, RR).arrange(DOWN, aligned_edge=LEFT, buff=1.0)
+        self.caser(pg, top=self.haut() - 0.6)
+        self.at(T["q1_an2"])
+        self.p(Write(AN2), rt=1.2)
+        self.tag_an(AN2)
         self.at(T["q1_res"])
         self.p(Write(RR), rt=1.0)
         self.at(T["q1_rep"])
@@ -566,24 +572,33 @@ class Correction(Scene):
         self.at(T["q2"])
         self.set_q("Ex. 1 · Q2")
         self.question([r"Exprimer puis calculer la fréquence $\nu$ et la longueur d'onde $\lambda$ du rayonnement."])
-        NU_REL = row(mx(r"\Delta E", WHITE, 40), mx("=", WHITE, 40), mx("h", WHITE, 40), mx(r"\nu", WHITE, 40))
-        NU_LIT = row(mx(r"\nu", WHITE, 40), mx("=", WHITE, 40), frac(mx(r"\Delta E", WHITE, 40), mx("h", WHITE, 40)))
-        NU_AN = row(mx(r"\nu", WHITE, 40), mx("=", WHITE, 40),
-                    frac(val(r"5{,}44\times10^{-19}", r"\mathrm{J}", WHITE, 40),
-                         val(r"6{,}63\times10^{-34}", (r"\mathrm{J\cdot}", r"\mathrm{s}"), WHITE, 40)))
-        NU_RES = row(mx(r"\nu", WHITE, 40), mx("=", WHITE, 40), val(r"8{,}205\times10^{14}", r"\mathrm{Hz}", RES, 40))
-        TETE_NU = VGroup(NU_LIT, NU_REL).arrange(RIGHT, buff=0.8)   # rappel ΔE = h ν à droite de l'expression encadrée
-        page = VGroup(TETE_NU, NU_AN, NU_RES).arrange(DOWN, aligned_edge=LEFT, buff=0.85)
-        self.caser(page, top=self.haut() - 0.6)
-        TXT_REL = tx("Relation à utiliser : énergie d'un photon et fréquence", 26, SOFT)
-        TXT_REL.move_to([0, page.get_top()[1] - 0.2, 0])
+        TXT_REL = tx("Relation à utiliser : énergie d'un photon et fréquence", 26, SOFT).move_to([0, 1.6, 0])
         self.at(T["q2_rel"])
         self.p(FadeIn(TXT_REL), rt=0.8)
+        NU_BIG = row(mx(r"\Delta E", WHITE, 68), mx("=", WHITE, 68), mx("h", WHITE, 68), mx(r"\nu", WHITE, 68))
+        NU_BIG.move_to([0, 0.2, 0])
         self.at(T["nu_rel"])
-        self.p(FadeOut(TXT_REL), Write(NU_REL), rt=0.9)
+        self.p(FadeOut(TXT_REL), Write(NU_BIG), rt=0.9)
+        # Relation à utiliser, puis la même relation avec la grandeur isolée dessous
+        NU_REL2 = row(mx(r"\Delta E", WHITE, 56), mx("=", WHITE, 56), mx("h", WHITE, 56), mx(r"\nu", WHITE, 56))
+        NU_LIT = row(mx(r"\nu", WHITE, 56), mx("=", WHITE, 56),
+                     frac(mx(r"\Delta E", WHITE, 56), mx("h", WHITE, 56)))
+        pg = VGroup(NU_REL2, NU_LIT).arrange(DOWN, buff=0.9)
+        self.at(T["nu_lit"] - 0.5)
+        self.vider(rt=0.4, garder=(self.cur_q,))
+        self.caser(pg, top=self.haut() - 0.6)
         self.at(T["nu_lit"])
+        self.p(Write(NU_REL2), rt=0.8)
         self.p(Write(NU_LIT), rt=1.0)
         self.encadre(NU_LIT)
+        NU_AN = row(mx(r"\nu", WHITE, 48), mx("=", WHITE, 48),
+                    frac(val(r"5{,}44\times10^{-19}", r"\mathrm{J}", WHITE, 48),
+                         val(r"6{,}63\times10^{-34}", (r"\mathrm{J\cdot}", r"\mathrm{s}"), WHITE, 48)))
+        NU_RES = row(mx(r"\nu", WHITE, 52), mx("=", WHITE, 52), val(r"8{,}21\times10^{14}", r"\mathrm{Hz}", RES, 52))
+        self.at(T["nu_an"] - 0.6)
+        self.vider(rt=0.4, garder=(self.cur_q,))
+        pg = VGroup(NU_AN, NU_RES).arrange(DOWN, aligned_edge=LEFT, buff=1.0)
+        self.caser(pg, top=self.haut() - 0.6)
         self.at(T["nu_an"])
         self.p(Write(NU_AN), rt=1.2)
         self.tag_an(NU_AN)
@@ -592,19 +607,19 @@ class Correction(Scene):
         self.at(T["nu_res"])
         self.p(Write(NU_RES), rt=1.0)
         self.at(T["nu_rep"])
-        self.reponse(r"La fréquence du rayonnement vaut $\nu = 8{,}205\times10^{14}\ \mathrm{Hz}$.", rt=0.8)
+        self.reponse(r"La fréquence du rayonnement vaut $\nu = 8{,}21\times10^{14}\ \mathrm{Hz}$.", rt=0.8)
 
         # ---------- Longueur d'onde (même question) ----------
         self.at(T["lam_lit"] - 2.4)
         self.vider(rt=0.5, garder=(self.cur_q,))
-        RAP = row(mx(r"\nu", WHITE, 40), mx("=", WHITE, 40), val(r"8{,}205\times10^{14}", r"\mathrm{Hz}", RES, 40))
-        LIT_L = row(mx(r"\lambda", WHITE, 40), mx("=", WHITE, 40), frac(mx("c", WHITE, 40), mx(r"\nu", WHITE, 40)))
-        AN_L = row(mx(r"\lambda", WHITE, 40), mx("=", WHITE, 40),
-                   frac(val(r"3{,}00\times10^{8}", r"\mathrm{m\cdot s^{-1}}", WHITE, 40),
-                        val(r"8{,}205\times10^{14}", r"\mathrm{Hz}", WHITE, 40)))
+        RAP = row(mx(r"\nu", WHITE, 44), mx("=", WHITE, 44), val(r"8{,}21\times10^{14}", r"\mathrm{Hz}", RES, 44))
+        LIT_L = row(mx(r"\lambda", WHITE, 54), mx("=", WHITE, 54), frac(mx("c", WHITE, 54), mx(r"\nu", WHITE, 54)))
+        cvL = val(r"3{,}00\times10^{8}", (r"\mathrm{m\cdot}", r"\mathrm{s^{-1}}"), WHITE, 44)
+        dvL = val(r"8{,}21\times10^{14}", r"\mathrm{Hz}", WHITE, 44)
+        AN_L = row(mx(r"\lambda", WHITE, 48), mx("=", WHITE, 48), frac(cvL, dvL))
         TETE_L = VGroup(LIT_L, RAP).arrange(RIGHT, buff=0.8)   # donnée ν à droite de l'expression encadrée
-        page = VGroup(TETE_L, AN_L).arrange(DOWN, aligned_edge=LEFT, buff=0.85)
-        self.caser(page, top=self.haut() - 0.6)
+        pg = VGroup(TETE_L, AN_L).arrange(DOWN, aligned_edge=LEFT, buff=1.0)
+        self.caser(pg, top=self.haut() - 0.6)
         self.at(T["lam_lit"])
         self.p(FadeIn(RAP), rt=0.6)
         self.p(Write(LIT_L), rt=1.0)
@@ -613,15 +628,17 @@ class Correction(Scene):
         self.at(T["lam_an"])
         self.p(Write(AN_L), rt=1.2)
         self.tag_an(AN_L)
+        self.at(T["lam_bar"])
+        self.barrer(cvL[1][1], dvL[1][0])
 
         self.at(T["lam_res"] - 1.0)
         self.vider(rt=0.5, garder=(self.cur_q,))
-        RES_L = row(mx(r"\lambda", WHITE, 40), mx("=", WHITE, 40), val(r"3{,}66\times10^{-7}", r"\mathrm{m}", RES, 40))
-        CONV = row(mx(r"\lambda", WHITE, 40), mx("=", WHITE, 40), val(r"366", r"\mathrm{nm}", RES, 40))
+        RES_L = row(mx(r"\lambda", WHITE, 48), mx("=", WHITE, 48), val(r"3{,}65\times10^{-7}", r"\mathrm{m}", RES, 48))
+        CONV = row(mx(r"\lambda", WHITE, 48), mx("=", WHITE, 48), val("365", r"\mathrm{nm}", RES, 48))
         DON_NM = row(tx("Donnée :", 24, SOFT), mx(r"1\ \mathrm{nm}", WHITE, 36), mx("=", WHITE, 36),
                      mx(r"10^{-9}\ \mathrm{m}", WHITE, 36))
-        page = VGroup(RES_L, CONV, DON_NM).arrange(DOWN, aligned_edge=LEFT, buff=0.7)
-        self.caser(page, top=self.haut() - 0.6)
+        pg = VGroup(RES_L, CONV, DON_NM).arrange(DOWN, aligned_edge=LEFT, buff=0.8)
+        self.caser(pg, top=self.haut() - 0.6)
         self.at(T["lam_res"])
         self.p(Write(RES_L), rt=1.0)
         self.at(T["lam_conv"])
@@ -629,7 +646,7 @@ class Correction(Scene):
         self.at(T["lam_don"])
         self.p(FadeIn(DON_NM), rt=0.8)
         self.at(T["lam_rep"])
-        self.reponse(r"La longueur d'onde vaut $\lambda = 366\ \mathrm{nm}$.", rt=0.8)
+        self.reponse(r"La longueur d'onde vaut $\lambda = 365\ \mathrm{nm}$.", rt=0.8)
         self.at(T["q3"] - 0.6)
         self.vider(rt=0.5)
 
@@ -638,15 +655,15 @@ class Correction(Scene):
         self.set_q("Ex. 1 · Q3")
         self.question(["Dans quel domaine des ondes électromagnétiques se trouve ce rayonnement ?"])
         VIS, HORS = bande_spectre()
-        REP366 = repere(366, "366 nm", RES)
+        REP365 = repere(365, "365 nm", RES)
         self.at(T["q3_bande"])
         self.p(FadeIn(VIS), rt=1.2)
         self.at(T["q3_ir"])
         self.p(FadeIn(HORS), rt=0.8)
-        self.at(T["q3_366"])
-        self.p(FadeIn(REP366), rt=0.6)
+        self.at(T["q3_rad"])
+        self.p(FadeIn(REP365), rt=0.6)
         self.at(T["q3_rep"])
-        self.reponse("Le rayonnement de 366 nm se situe dans le domaine des ultraviolets.", rt=0.8)
+        self.reponse("Le rayonnement de 365 nm se situe dans le domaine des ultraviolets.", rt=0.8)
         self.at(T["ex2"] - 0.7)
         self.vider(rt=0.4)
 
@@ -700,24 +717,32 @@ class Correction(Scene):
         self.at(T["q1b_conv"] - 0.7)
         self.vider(rt=0.5, garder=(self.cur_q,))
 
-        # Conversion en électronvolts
-        LIT_C = row(mx(r"\Delta E_{\mathrm{eV}}", WHITE, 40), mx("=", WHITE, 40),
-                    frac(mx(r"\Delta E_{\mathrm{J}}", WHITE, 40),
-                         mx(r"1{,}60\times10^{-19}\ \mathrm{J\cdot eV^{-1}}", WHITE, 40)))
-        cJ = val(r"4{,}70\times10^{-19}", r"\mathrm{J}", WHITE, 36)
-        cD = val(r"1{,}60\times10^{-19}", (r"\mathrm{J\cdot}", r"\mathrm{eV}^{-1}"), WHITE, 36)
-        AN_C = row(mx(r"\Delta E_{\mathrm{eV}}", WHITE, 36), mx("=", WHITE, 36), frac(cJ, cD))
-        RES_C = row(mx(r"\Delta E_{\mathrm{eV}}", WHITE, 40), mx("=", WHITE, 40), val(r"2{,}94", r"\mathrm{eV}", RES, 40))
-        page = VGroup(LIT_C, AN_C, RES_C).arrange(DOWN, aligned_edge=LEFT, buff=0.8)
-        self.caser(page, top=self.haut() - 0.6)
+        # Conversion en électronvolts : ΔE_eV = ΔE_J / (1 eV), puis 1 eV remplacé par sa valeur en joules
+        LIT_C = row(mx(r"\Delta E_{\mathrm{eV}}", WHITE, 48), mx("=", WHITE, 48),
+                    frac(mx(r"\Delta E_{\mathrm{J}}", WHITE, 48), mx(r"1\ \mathrm{eV}", WHITE, 48)))
+        AN_C1 = row(mx(r"\Delta E_{\mathrm{eV}}", WHITE, 44), mx("=", WHITE, 44),
+                    frac(val(r"4{,}70\times10^{-19}", r"\mathrm{J}", WHITE, 44), mx(r"1\ \mathrm{eV}", WHITE, 44)))
+        cJ = val(r"4{,}70\times10^{-19}", r"\mathrm{J}", WHITE, 44)
+        cD = val(r"1{,}60\times10^{-19}", r"\mathrm{J}", WHITE, 44)
+        AN_C2 = row(mx(r"\Delta E_{\mathrm{eV}}", WHITE, 44), mx("=", WHITE, 44), frac(cJ, cD))
+        RES_C = row(mx(r"\Delta E_{\mathrm{eV}}", WHITE, 52), mx("=", WHITE, 52), val(r"2{,}94", r"\mathrm{eV}", RES, 52))
+        pg = VGroup(LIT_C, AN_C1).arrange(DOWN, aligned_edge=LEFT, buff=1.0)
+        self.caser(pg, top=self.haut() - 0.6)
         self.at(T["q1b_conv"])
         self.p(Write(LIT_C), rt=1.0)
         self.encadre(LIT_C)
         self.at(T["q1b_an2"])
-        self.p(Write(AN_C), rt=1.2)
-        self.tag_an(AN_C)
-        self.at(T["q1b_an2"] + 3.0)
-        self.barrer(cJ[1], cD[1][0])
+        self.p(Write(AN_C1), rt=1.2)
+        self.tag_an(AN_C1)
+        self.at(T["q1b_div"] - 0.6)
+        self.vider(rt=0.4, garder=(self.cur_q,))
+        pg = VGroup(AN_C2, RES_C).arrange(DOWN, aligned_edge=LEFT, buff=1.0)
+        self.caser(pg, top=self.haut() - 0.6)
+        self.at(T["q1b_div"])
+        self.p(Write(AN_C2), rt=1.2)
+        self.tag_an(AN_C2)
+        self.at(T["q1b_bar2"])
+        self.barrer(cJ[1], cD[1])
         self.at(T["q1b_res2"])
         self.p(Write(RES_C), rt=1.0)
         self.at(T["q1b_rep"])
@@ -774,22 +799,29 @@ class Correction(Scene):
         self.at(T["q2b_jlit"] - 0.7)
         self.vider(rt=0.4, garder=(self.cur_q, D2, FL2))
 
-        # Conversion en joules : E(J) = E(eV) × 1,60e-19 J/eV
-        LIT_J = row(mx(r"\Delta E_{\mathrm{J}}", WHITE, 32), mx("=", WHITE, 32), mx(r"\Delta E_{\mathrm{eV}}", WHITE, 32),
-                    mx(r"\times", WHITE, 32), mx(r"1{,}60\times10^{-19}\ \mathrm{J\cdot eV^{-1}}", WHITE, 32))
-        jv = val("1{,}06", r"\mathrm{eV}", WHITE, 32)
-        jc = val(r"1{,}60\times10^{-19}", (r"\mathrm{J\cdot}", r"\mathrm{eV}^{-1}"), WHITE, 32)
-        AN_J = row(mx(r"\Delta E_{\mathrm{J}}", WHITE, 32), mx("=", WHITE, 32), jv, mx(r"\times", WHITE, 32), jc)
-        RES_J = row(mx(r"\Delta E_{\mathrm{J}}", WHITE, 36), mx("=", WHITE, 36), val(r"1{,}70\times10^{-19}", r"\mathrm{J}", RES, 36))
-        droite2 = VGroup(LIT_J, AN_J, RES_J).arrange(DOWN, aligned_edge=LEFT, buff=0.7)
+        # Conversion en joules : ΔE_J = ΔE_eV × 1 eV, puis 1 eV remplacé par sa valeur
+        LIT_J = row(mx(r"\Delta E_{\mathrm{J}}", WHITE, 40), mx("=", WHITE, 40), mx(r"\Delta E_{\mathrm{eV}}", WHITE, 40),
+                    mx(r"\times", WHITE, 40), mx(r"1\ \mathrm{eV}", WHITE, 40))
+        AN_J1 = row(mx(r"\Delta E_{\mathrm{J}}", WHITE, 36), mx("=", WHITE, 36), mx("1{,}06", WHITE, 36),
+                    mx(r"\times", WHITE, 36), mx(r"1\ \mathrm{eV}", WHITE, 36))
+        AN_J2 = row(mx(r"\Delta E_{\mathrm{J}}", WHITE, 36), mx("=", WHITE, 36), mx("1{,}06", WHITE, 36),
+                    mx(r"\times", WHITE, 36), mx(r"1{,}60\times10^{-19}\ \mathrm{J}", WHITE, 36))
+        RES_J = row(mx(r"\Delta E_{\mathrm{J}}", WHITE, 40), mx("=", WHITE, 40), val(r"1{,}70\times10^{-19}", r"\mathrm{J}", RES, 40))
+        droite2 = VGroup(LIT_J, AN_J1).arrange(DOWN, aligned_edge=LEFT, buff=0.8)
         self.caser(droite2, top=self.haut() - 0.6, x=3.6, w=6.4)
         self.at(T["q2b_jlit"])
         self.p(Write(LIT_J), rt=1.0)
         self.encadre(LIT_J)
         self.at(T["q2b_jan"])
-        self.p(Write(AN_J), rt=1.2)
-        self.tag_an(AN_J)
-        self.barrer(jv[1], jc[1][1])
+        self.p(Write(AN_J1), rt=1.2)
+        self.tag_an(AN_J1)
+        self.at(T["q2b_jan2"] - 0.6)
+        self.vider(rt=0.4, garder=(self.cur_q, D2, FL2))
+        droite3 = VGroup(AN_J2, RES_J).arrange(DOWN, aligned_edge=LEFT, buff=0.8)
+        self.caser(droite3, top=self.haut() - 0.6, x=3.6, w=6.4)
+        self.at(T["q2b_jan2"])
+        self.p(Write(AN_J2), rt=1.2)
+        self.tag_an(AN_J2)
         self.at(T["q2b_jres"])
         self.p(Write(RES_J), rt=1.0)
         self.at(T["q2b_rep"])
@@ -802,18 +834,22 @@ class Correction(Scene):
         self.set_q("Ex. 2 · Q3")
         self.question([r"3. Calculer la longueur d'onde correspondant à la transition de $E_2$ à $E_3$.",
                        "Préciser le domaine spectral de ce rayonnement."])
-        LIT_3 = row(mx(r"\lambda", WHITE, 40), mx("=", WHITE, 40), frac(mx(r"h\,c", WHITE, 40), mx(r"\Delta E", WHITE, 40)))
+        LIT_3 = row(mx(r"\lambda", WHITE, 44), mx("=", WHITE, 44), frac(mx(r"h\,c", WHITE, 44), mx(r"\Delta E", WHITE, 44)))
         hv3 = val(r"6{,}63\times10^{-34}", (r"\mathrm{J\cdot}", r"\mathrm{s}"), WHITE, 36)
         cv3 = val(r"3{,}00\times10^{8}", (r"\mathrm{m\cdot}", r"\mathrm{s^{-1}}"), WHITE, 36)
         dv3 = val(r"1{,}70\times10^{-19}", r"\mathrm{J}", WHITE, 36)
-        AN_3 = row(mx(r"\lambda", WHITE, 40), mx("=", WHITE, 40), frac(row(hv3, mx(r"\times", WHITE, 36), cv3), dv3))
-        RES_3 = row(mx(r"\lambda", WHITE, 40), mx("=", WHITE, 40), val(r"1{,}17\times10^{-6}", r"\mathrm{m}", RES, 40))
-        CONV_3 = row(mx(r"\lambda", WHITE, 40), mx("=", WHITE, 40), val(r"1\,170", r"\mathrm{nm}", RES, 40))
-        page = VGroup(LIT_3, AN_3, RES_3, CONV_3).arrange(DOWN, aligned_edge=LEFT, buff=0.6)
-        self.caser(page, top=self.haut() - 0.6)
+        AN_3 = row(mx(r"\lambda", WHITE, 44), mx("=", WHITE, 44), frac(row(hv3, mx(r"\times", WHITE, 36), cv3), dv3))
+        RES_3 = row(mx(r"\lambda", WHITE, 44), mx("=", WHITE, 44), val(r"1{,}17\times10^{-6}", r"\mathrm{m}", RES, 44))
+        CONV_3 = row(mx(r"\lambda", WHITE, 44), mx("=", WHITE, 44), val(r"1\,170", r"\mathrm{nm}", RES, 44))
+        pg = VGroup(LIT_3).arrange(DOWN)
+        self.caser(LIT_3, top=self.haut() - 0.6)
         self.at(T["q3b_lit"])
         self.p(Write(LIT_3), rt=1.0)
         self.encadre(LIT_3)
+        self.at(T["q3b_an"] - 0.6)
+        self.vider(rt=0.4, garder=(self.cur_q,))
+        pg = VGroup(AN_3, RES_3, CONV_3).arrange(DOWN, aligned_edge=LEFT, buff=0.7)
+        self.caser(pg, top=self.haut() - 0.6)
         self.at(T["q3b_an"])
         self.p(Write(AN_3), rt=1.2)
         self.tag_an(AN_3)
@@ -863,43 +899,73 @@ class Correction(Scene):
         TXT_CALC = tx("La longueur d'onde est connue : on calcule l'énergie.", 26, SOFT)
         self.at(T["q4_calc"])
         self.p(FadeIn(TXT_CALC), rt=0.6)
-        LIT_4 = row(mx("E", WHITE, 40), mx("=", WHITE, 40), frac(mx(r"h\,c", WHITE, 40), mx(r"\lambda", WHITE, 40)))
-        hv4 = val(r"6{,}63\times10^{-34}", (r"\mathrm{J\cdot}", r"\mathrm{s}"), WHITE, 36)
-        cv4 = val(r"3{,}00\times10^{8}", (r"\mathrm{m\cdot}", r"\mathrm{s^{-1}}"), WHITE, 36)
-        dv4 = val(r"520\times10^{-9}", r"\mathrm{m}", WHITE, 36)
-        AN_4 = row(mx("E", WHITE, 40), mx("=", WHITE, 40), frac(row(hv4, mx(r"\times", WHITE, 36), cv4), dv4))
-        RES_4 = row(mx("E", WHITE, 40), mx("=", WHITE, 40), val(r"3{,}83\times10^{-19}", r"\mathrm{J}", RES, 40))
-        CONV_4 = row(mx("E", WHITE, 40), mx("=", WHITE, 40), val("2{,}39", r"\mathrm{eV}", RES, 40))
-        page = VGroup(LIT_4, AN_4, RES_4, CONV_4).arrange(DOWN, aligned_edge=LEFT, buff=0.6)
-        self.caser(page, top=self.haut() - 0.6)
+        LIT_4 = row(mx("E", WHITE, 48), mx("=", WHITE, 48), frac(mx(r"h\,c", WHITE, 48), mx(r"\lambda", WHITE, 48)))
+        hv4 = val(r"6{,}63\times10^{-34}", (r"\mathrm{J\cdot}", r"\mathrm{s}"), WHITE, 40)
+        cv4 = val(r"3{,}00\times10^{8}", (r"\mathrm{m\cdot}", r"\mathrm{s^{-1}}"), WHITE, 40)
+        dv4 = val(r"520\times10^{-9}", r"\mathrm{m}", WHITE, 40)
+        AN_4 = row(mx("E", WHITE, 44), mx("=", WHITE, 44), frac(row(hv4, mx(r"\times", WHITE, 40), cv4), dv4))
+        RES_4 = row(mx("E", WHITE, 48), mx("=", WHITE, 48), val(r"3{,}83\times10^{-19}", r"\mathrm{J}", RES, 48))
+        self.caser(LIT_4, top=self.haut() - 0.6)
         self.at(T["q4_lit"] - 0.6)
         self.p(FadeOut(TXT_CALC), rt=0.4)
         self.at(T["q4_lit"])
         self.p(Write(LIT_4), rt=1.0)
-        self.encadre(LIT_4)
+        self.encadre(LIT_4, rt=0.6)
+        self.at(T["q4_an"] - 0.6)
+        self.vider(rt=0.4, garder=(self.cur_q,))
+        pg = VGroup(AN_4, RES_4).arrange(DOWN, aligned_edge=LEFT, buff=0.9)
+        self.caser(pg, top=self.haut() - 0.6)
         self.at(T["q4_an"])
         self.p(Write(AN_4), rt=1.2)
         self.tag_an(AN_4)
-        self.at(T["q4_res"] - 0.6)
-        self.barrer(hv4[1][1], cv4[1][1], cv4[1][0], dv4[1][0])
+        self.at(T["q4_bar"])
+        self.barrer(hv4[1][1], cv4[1][1], cv4[1][0], dv4[1][0], rt=0.4)
         self.at(T["q4_res"])
-        self.p(Write(RES_4), rt=1.0)
-        self.at(T["q4_conv"])
-        self.p(Write(CONV_4), rt=1.0)
-        self.at(T["q4_titre"] - 0.4)
-        self.vider(rt=0.4, garder=(self.cur_q,))
+        self.p(Write(RES_4), rt=0.8)
+        self.at(T["q4_conv"] - 0.4)
+        self.vider(rt=0.3, garder=(self.cur_q,))
 
-        # Comparaison avec les écarts entre niveaux
-        TIT_G = tx("Écarts d'énergie possibles entre les niveaux", 26, SOFT)
-        VALS = row(*[mx(s + r"\ \mathrm{eV}", WHITE, 36) for s in ["1{,}06", "1{,}74", "1{,}88", "2{,}80", "2{,}94", "4{,}68"]],
-                   buff=0.6)
-        CMP = txm(r"Aucun écart ne vaut $2{,}39\ \mathrm{eV}$", 28, ABSO, w=10)
-        page = VGroup(TIT_G, VALS, CMP).arrange(DOWN, buff=0.9)
-        self.caser(page, top=self.haut() - 0.6, x=0)
+        # Conversion de E en électronvolts : E_eV = E_J / (1 eV), puis 1 eV remplacé par sa valeur
+        LIT_4C = row(mx(r"E_{\mathrm{eV}}", WHITE, 48), mx("=", WHITE, 48),
+                     frac(mx(r"E_{\mathrm{J}}", WHITE, 48), mx(r"1\ \mathrm{eV}", WHITE, 48)))
+        AN_4C = row(mx(r"E_{\mathrm{eV}}", WHITE, 44), mx("=", WHITE, 44),
+                    frac(val(r"3{,}83\times10^{-19}", r"\mathrm{J}", WHITE, 44), mx(r"1{,}60\times10^{-19}\ \mathrm{J}", WHITE, 44)))
+        cEJ = val(r"3{,}83\times10^{-19}", r"\mathrm{J}", WHITE, 44)
+        cEc = val(r"1{,}60\times10^{-19}", r"\mathrm{J}", WHITE, 44)
+        RES_4C = row(mx(r"E_{\mathrm{eV}}", WHITE, 52), mx("=", WHITE, 52), val("2{,}39", r"\mathrm{eV}", RES, 52))
+        pg = VGroup(LIT_4C, AN_4C).arrange(DOWN, aligned_edge=LEFT, buff=1.0)
+        self.caser(pg, top=self.haut() - 0.6)
+        self.at(T["q4_conv"])
+        self.p(Write(LIT_4C), rt=1.0)
+        self.encadre(LIT_4C, rt=0.6)
+        self.at(T["q4_conv_an"])
+        self.p(Write(AN_4C), rt=1.2)
+        self.tag_an(AN_4C)
+        self.at(T["q4_conv_bar"])
+        self.barrer(cEJ[1], rt=0.4)
+        self.at(T["q4_conv_res"])
+        self.p(Write(RES_4C), rt=0.8)
+        self.at(T["q4_titre"] - 0.4)
+        self.vider(rt=0.4)
+
+        # Écarts entre niveaux, représentés sur le diagramme
+        GAPS = [(2, 3, "1{,}06"), (3, 4, "1{,}74"), (1, 2, "1{,}88"), (2, 4, "2{,}80"), (1, 3, "2{,}94"), (1, 4, "4{,}68")]
         self.at(T["q4_titre"])
-        self.p(FadeIn(TIT_G), rt=0.6)
+        DG = niveaux(-4.8)
+        TIT_G = tx("Écarts d'énergie entre les niveaux", 28, SOFT).move_to([1.5, 2.9, 0])
+        self.p(FadeIn(DG), FadeIn(TIT_G), rt=0.8)
+        ECARTS = VGroup()
+        ETIQ = VGroup()
+        for i, (a, b, v) in enumerate(GAPS):
+            xc = -0.6 + 1.0 * i
+            ya, yb = yE(EN[a]), yE(EN[b])
+            ECARTS.add(DoubleArrow(start=[xc, ya, 0], end=[xc, yb, 0], buff=0, color=CONC,
+                                   stroke_width=4, tip_length=0.18))
+            ETIQ.add(mx(v + r"\ \mathrm{eV}", WHITE, 26).move_to([xc + 0.45, (ya + yb) / 2, 0]))
         self.at(T["q4_ecarts"])
-        self.p(FadeIn(VALS), rt=1.0)
+        self.p(LaggedStart(*[Create(a) for a in ECARTS], lag_ratio=0.4), FadeIn(ETIQ), rt=4.0)
+        CMP = txm(r"Aucun écart ne vaut $2{,}39\ \mathrm{eV}$", 28, ABSO, w=10)
+        CMP.move_to([0, 2.3, 0])
         self.at(T["q4_cmp"])
         self.p(FadeIn(CMP), rt=0.8)
         self.at(T["q4_rep"])
