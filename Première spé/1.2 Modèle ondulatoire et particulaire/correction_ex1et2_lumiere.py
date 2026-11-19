@@ -933,7 +933,7 @@ class Correction(Scene):
         cEJ = val(r"3{,}83\times10^{-19}", r"\mathrm{J}", WHITE, 44)
         cEc = val(r"1{,}60\times10^{-19}", r"\mathrm{J}", WHITE, 44)
         RES_4C = row(mx(r"E_{\mathrm{eV}}", WHITE, 52), mx("=", WHITE, 52), val("2{,}39", r"\mathrm{eV}", RES, 52))
-        pg = VGroup(LIT_4C, AN_4C).arrange(DOWN, aligned_edge=LEFT, buff=1.0)
+        pg = VGroup(LIT_4C, AN_4C, RES_4C).arrange(DOWN, aligned_edge=LEFT, buff=0.8)
         self.caser(pg, top=self.haut() - 0.6)
         self.at(T["q4_conv"])
         self.p(Write(LIT_4C), rt=1.0)
