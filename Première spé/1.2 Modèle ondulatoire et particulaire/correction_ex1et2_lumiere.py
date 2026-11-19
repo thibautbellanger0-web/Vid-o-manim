@@ -970,4 +970,6 @@ class Correction(Scene):
         self.p(FadeIn(CMP), rt=0.8)
         self.at(T["q4_rep"])
         self.reponse("Le photon de 520 nm n'est pas absorbé par l'atome de calcium.", rt=0.8)
-        self.pause(2.5)
+        # Fin : l'audio dure 8 min (480 s) ; marge de 10 s sur la dernière image, à couper au montage
+        self.at(480.0)
+        self.pause(10.0)
