@@ -882,36 +882,36 @@ class Correction(Scene):
         # La plaque (à gauche) et la colonne d'explications (à droite, entre x = 0,6 et x = 6,6)
         self.at(T["plaque"] - 0.5)
         self.vider(rt=0.5)
-        PX, PY, PW, PH = -3.0, -0.45, 3.9, 5.4
+        PX, PY, PW, PH = -3.4, -0.45, 3.9, 5.4
         BAS, HAUT = PY - PH / 2, PY + PH / 2
         YD = BAS + 0.6                       # ligne de dépôt (1 cm du bas)
         YF = HAUT - 0.5                      # front final de l'éluant
         XCOL = [PX - 1.2, PX, PX + 1.2]      # jaune, bleu, sirop
-        XR = 0.6
+        XR = 0.2
         PL = Rectangle(width=PW, height=PH, stroke_color=GRIS2, stroke_width=2, fill_color=PLAQUE, fill_opacity=1)
         PL.move_to([PX, PY, 0])
         self.at(T["plaque"])
         self.p(FadeIn(PL, shift=UP * 0.2), rt=0.8)
         self.at(T["ligne"])
         LD = Line([PX - PW / 2 + 0.15, YD, 0], [PX + PW / 2 - 0.15, YD, 0], color="#555555", stroke_width=3)
-        LLD = lignes("ligne de dépôt", "au crayon, à 1 cm du bas", fs=32, c=WHITE, buff=0.1, w=5.8)
+        LLD = lignes("ligne de dépôt", "au crayon, à 1 cm du bas", fs=30, c=WHITE, buff=0.1, w=5.8)
         LLD.move_to([0, YD + 0.25, 0]).align_to([XR, 0, 0], LEFT)
         FLD = Arrow(start=[XR - 0.1, YD + 0.25, 0], end=[PX + PW / 2 + 0.05, YD, 0], color=WHITE, buff=0.05,
                     stroke_width=3, max_tip_length_to_length_ratio=0.15)
         self.p(Create(LD), FadeIn(LLD), GrowArrow(FLD), rt=1.0)
         self.at(T["depots"])
         self.p(FadeOut(LLD), FadeOut(FLD), rt=0.5)
-        TD = tx("3 dépôts côte à côte", 38, WHITE, bold=True).move_to([0, 2.2, 0]).align_to([XR, 0, 0], LEFT)
+        TD = tx("3 dépôts côte à côte", 34, WHITE, bold=True).move_to([0, 2.2, 0]).align_to([XR, 0, 0], LEFT)
         self.apparait(TD, rt=0.6)
         DJ = tache(JAUNE).move_to([XCOL[0], YD, 0])
         DB = tache(BLEU).move_to([XCOL[1], YD, 0])
         DS = tache(VERT).move_to([XCOL[2], YD, 0])
-        NJ = tx("J", 34, WHITE, bold=True).move_to([XCOL[0], BAS - 0.35, 0])
-        NB = tx("B", 34, WHITE, bold=True).move_to([XCOL[1], BAS - 0.35, 0])
-        NS = tx("S", 34, WHITE, bold=True).move_to([XCOL[2], BAS - 0.35, 0])
-        LEGD = VGroup(row(tache(JAUNE), tx("J : colorant jaune", 32, WHITE), buff=0.3),
-                      row(tache(BLEU), tx("B : colorant bleu", 32, WHITE), buff=0.3),
-                      row(tache(VERT), tx("S : sirop de menthe", 32, WHITE), buff=0.3)).arrange(
+        NJ = tx("J", 30, WHITE, bold=True).move_to([XCOL[0], BAS - 0.35, 0])
+        NB = tx("B", 30, WHITE, bold=True).move_to([XCOL[1], BAS - 0.35, 0])
+        NS = tx("S", 30, WHITE, bold=True).move_to([XCOL[2], BAS - 0.35, 0])
+        LEGD = VGroup(row(tache(JAUNE), tx("J : colorant jaune", 30, WHITE), buff=0.3),
+                      row(tache(BLEU), tx("B : colorant bleu", 30, WHITE), buff=0.3),
+                      row(tache(VERT), tx("S : sirop de menthe", 30, WHITE), buff=0.3)).arrange(
             DOWN, aligned_edge=LEFT, buff=0.35)
         LEGD.next_to(TD, DOWN, buff=0.5).align_to(TD, LEFT)
         self.at(T["dep_j"])
@@ -929,14 +929,14 @@ class Correction(Scene):
                       Line([PX + PW / 2 + 0.35, CB, 0], [PX + PW / 2 + 0.35, 0.9, 0])).set_stroke(WHITE, 3)
         EL = Rectangle(width=PW + 0.62, height=0.6, stroke_width=0, fill_color=ELUANT, fill_opacity=0.55)
         EL.move_to([PX, CB + 0.3 + 0.02, 0])
-        LEL = tx("éluant", 34, WHITE, bold=True).move_to([0, CB + 0.3, 0]).align_to([XR + 0.4, 0, 0], LEFT)
+        LEL = tx("éluant", 30, WHITE, bold=True).move_to([0, CB + 0.3, 0]).align_to([XR + 0.4, 0, 0], LEFT)
         FEL = Arrow(start=[XR + 0.3, CB + 0.3, 0], end=[PX + PW / 2 + 0.1, CB + 0.3, 0], color=WHITE, buff=0.05,
                     stroke_width=3, max_tip_length_to_length_ratio=0.15)
         self.p(FadeOut(TD), FadeOut(LEGD), Create(CUVE), FadeIn(EL), FadeIn(LEL), GrowArrow(FEL),
                NJ.animate.set_opacity(0), NB.animate.set_opacity(0), NS.animate.set_opacity(0), rt=1.2)
         self.at(T["attention"])
         ATT = VGroup(tx("Attention :", 36, WHITE, bold=True),
-                     lignes("l'éluant reste sous", "la ligne de dépôt", fs=32, c=WHITE, buff=0.08)).arrange(
+                     lignes("l'éluant reste sous", "la ligne de dépôt", fs=30, c=WHITE, buff=0.08)).arrange(
             DOWN, aligned_edge=LEFT, buff=0.15)
         ATT.move_to([0, YD + 1.4, 0]).align_to([XR, 0, 0], LEFT)
         ECART = DoubleArrow(start=[PX + PW / 2 + 0.6, EL.get_top()[1], 0], end=[PX + PW / 2 + 0.6, YD, 0], buff=0,
@@ -958,18 +958,18 @@ class Correction(Scene):
         self.add(FRONT0)
         self.add(SB, SJ)
         self.remove(DS)
-        MONTE = tx("L'éluant monte…", 38, WHITE, bold=True, w=5.6).move_to([0, 1.8, 0]).align_to([XR, 0, 0], LEFT)
+        MONTE = tx("L'éluant monte…", 34, WHITE, bold=True, w=5.6).move_to([0, 1.8, 0]).align_to([XR, 0, 0], LEFT)
         self.p(Transform(FRONT0, FRONT1),
                DJ.animate.move_to([XCOL[0], YJ, 0]).stretch(1.15, 1), SJ.animate.move_to([XCOL[2], YJ, 0]).stretch(1.15, 1),
                DB.animate.move_to([XCOL[1], YB_, 0]), SB.animate.move_to([XCOL[2], YB_, 0]),
                FadeIn(MONTE), rt=4.0)
         self.at(T["vitesse"])
-        VIT = tx("… mais pas à la même vitesse", 32, WHITE, w=5.4).next_to(MONTE, DOWN, buff=0.25).align_to(MONTE, LEFT)
+        VIT = tx("… mais pas à la même vitesse", 30, WHITE, w=6.0).next_to(MONTE, DOWN, buff=0.25).align_to(MONTE, LEFT)
         self.apparait(VIT, rt=0.6)
         self.at(T["affinite"])
         self.p(FadeOut(MONTE), FadeOut(VIT), rt=0.4)
-        AF1 = row(tx("phase fixe", 34, WHITE, bold=True), tx("= la plaque", 34, SOFT), buff=0.25)
-        AF2 = row(tx("phase mobile", 34, WHITE, bold=True), tx("= l'éluant", 34, SOFT), buff=0.25)
+        AF1 = row(tx("phase fixe", 30, WHITE, bold=True), tx("= la plaque", 30, SOFT), buff=0.25)
+        AF2 = row(tx("phase mobile", 30, WHITE, bold=True), tx("= l'éluant", 30, SOFT), buff=0.25)
         AFF = VGroup(AF1, AF2).arrange(DOWN, aligned_edge=LEFT, buff=0.3).move_to([0, 2.0, 0]).align_to(
             [XR, 0, 0], LEFT)
         self.at(T["aff_plaque"])
@@ -978,13 +978,13 @@ class Correction(Scene):
         self.p(FadeIn(AF2, shift=LEFT * 0.2), Circumscribe(FRONT0, color=HL, buff=0.05), rt=0.9)
         self.at(T["monte_haut"])
         H1 = row(Arrow(start=DOWN * 0.6, end=UP * 0.6, color=WHITE, buff=0, stroke_width=6),
-                 lignes("préfère l'éluant", "→ monte haut", fs=32, c=WHITE, buff=0.06), buff=0.35)
+                 lignes("préfère l'éluant", "→ monte haut", fs=30, c=WHITE, buff=0.06), buff=0.35)
         H1.move_to([0, 0.1, 0]).align_to([XR, 0, 0], LEFT)
         self.p(FadeIn(H1), DJ.animate(rate_func=there_and_back).scale(1.4),
                SJ.animate(rate_func=there_and_back).scale(1.4), rt=1.0)
         self.at(T["monte_peu"])
         H2 = row(Arrow(start=DOWN * 0.25, end=UP * 0.25, color=WHITE, buff=0, stroke_width=6),
-                 lignes("accrochée à la plaque", "→ monte peu", fs=32, c=WHITE, buff=0.06), buff=0.35)
+                 lignes("accrochée à la plaque", "→ monte peu", fs=30, c=WHITE, buff=0.06), buff=0.35)
         H2.move_to([0, -1.5, 0]).align_to([XR, 0, 0], LEFT)
         self.p(FadeIn(H2), DB.animate(rate_func=there_and_back).scale(1.4),
                SB.animate(rate_func=there_and_back).scale(1.4), H1.animate.set_opacity(0.35), rt=1.0)
@@ -995,13 +995,13 @@ class Correction(Scene):
                FRONT0.animate.set_opacity(0.12), rt=0.8)
         self.at(T["front"])
         LF = DashedLine([PX - PW / 2 + 0.1, YF, 0], [PX + PW / 2 - 0.1, YF, 0], color="#555555", stroke_width=3)
-        LLF = tx("front de l'éluant", 32, WHITE).move_to([0, YF, 0]).align_to([XR + 0.4, 0, 0], LEFT)
+        LLF = tx("front de l'éluant", 30, WHITE).move_to([0, YF, 0]).align_to([XR + 0.4, 0, 0], LEFT)
         FLF = Arrow(start=[XR + 0.3, YF, 0], end=[PX + PW / 2 + 0.05, YF, 0], color=WHITE, buff=0.05, stroke_width=3,
                     max_tip_length_to_length_ratio=0.15)
         self.p(Create(LF), FadeIn(LLF), GrowArrow(FLF), NJ.animate.set_opacity(1), NB.animate.set_opacity(1),
                NS.animate.set_opacity(1), rt=1.0)
         self.at(T["chromato"])
-        CHR = tx("Le chromatogramme", 42, WHITE, bold=True).move_to([0, 0.6, 0]).align_to([XR, 0, 0], LEFT)
+        CHR = tx("Le chromatogramme", 36, WHITE, bold=True).move_to([0, 0.6, 0]).align_to([XR, 0, 0], LEFT)
         self.apparait(CHR)
         self.souligner(CHR)
 
@@ -1009,7 +1009,7 @@ class Correction(Scene):
         self.at(T["verticale"] - 0.5)
         self.vider(rt=0.5, garder=(PL, LD, LF, FRONT0, DJ, DB, SJ, SB, NJ, NB, NS))
         self.at(T["verticale"])
-        LV = row(tx("Lecture verticale", 40, WHITE, bold=True),
+        LV = row(tx("Lecture verticale", 34, WHITE, bold=True),
                  Arrow(start=UP * 0.4, end=DOWN * 0.4, color=WHITE, buff=0, stroke_width=6), buff=0.3)
         LV.move_to([0, 2.2, 0]).align_to([XR, 0, 0], LEFT)
         self.apparait(LV)
@@ -1020,18 +1020,18 @@ class Correction(Scene):
                 [XCOL[k], YC, 0])
         self.at(T["col_j"])
         COL = colonne(0)
-        RJ = row(tx("J :", 34, WHITE, bold=True), tx("1 tache → corps pur", 34, WHITE), buff=0.25)
+        RJ = row(tx("J :", 30, WHITE, bold=True), tx("1 tache → corps pur", 30, WHITE), buff=0.25)
         RJ.move_to([0, 1.1, 0]).align_to([XR, 0, 0], LEFT)
         self.p(Create(COL), FadeIn(RJ), DB.animate.set_opacity(0.2), SJ.animate.set_opacity(0.2),
                SB.animate.set_opacity(0.2), rt=0.8)
         self.grossir(DJ, f=1.4, rt=0.8)
         self.at(T["col_b"])
-        RB = row(tx("B :", 34, WHITE, bold=True), tx("1 tache → corps pur", 34, WHITE), buff=0.25)
+        RB = row(tx("B :", 30, WHITE, bold=True), tx("1 tache → corps pur", 30, WHITE), buff=0.25)
         RB.next_to(RJ, DOWN, buff=0.35).align_to(RJ, LEFT)
         self.p(COL.animate.move_to([XCOL[1], YC, 0]), FadeIn(RB), DB.animate.set_opacity(1),
                DJ.animate.set_opacity(0.2), RJ.animate.set_opacity(0.35), rt=0.8)
         self.at(T["col_s"])
-        RSI = row(tx("S :", 34, WHITE, bold=True), tx("2 taches → mélange", 34, WHITE, bold=True), buff=0.25)
+        RSI = row(tx("S :", 30, WHITE, bold=True), tx("2 taches → mélange", 30, WHITE, bold=True), buff=0.25)
         RSI.next_to(RB, DOWN, buff=0.35).align_to(RJ, LEFT)
         self.p(COL.animate.move_to([XCOL[2], YC, 0]), FadeIn(RSI), SJ.animate.set_opacity(1),
                SB.animate.set_opacity(1), DB.animate.set_opacity(0.2), RB.animate.set_opacity(0.35), rt=0.8)
@@ -1042,23 +1042,23 @@ class Correction(Scene):
         self.p(FadeOut(COL), FadeOut(LV), FadeOut(RJ), FadeOut(RB), FadeOut(RSI), DJ.animate.set_opacity(1),
                DB.animate.set_opacity(1), rt=0.5)
         self.at(T["horizontale"])
-        LH_ = row(tx("Lecture horizontale", 40, WHITE, bold=True),
+        LH_ = row(tx("Lecture horizontale", 34, WHITE, bold=True),
                   Arrow(start=LEFT * 0.4, end=RIGHT * 0.4, color=WHITE, buff=0, stroke_width=6), buff=0.3)
         LH_.move_to([0, 2.2, 0]).align_to([XR, 0, 0], LEFT)
         self.apparait(LH_)
         self.at(T["meme"])
-        MH = lignes("même hauteur", "= même espèce chimique", fs=34, c=WHITE, buff=0.08)
+        MH = lignes("même hauteur", "= même espèce chimique", fs=30, c=WHITE, buff=0.08)
         MH.move_to([0, 1.1, 0]).align_to([XR, 0, 0], LEFT)
         self.apparait(MH)
         self.at(T["ici"])
         HJ = DashedLine([PX - PW / 2, YJ, 0], [PX + PW / 2 + 0.3, YJ, 0], color=WHITE, stroke_width=3)
-        HJT = tx("S contient J", 34, WHITE, bold=True).move_to([0, -0.4, 0]).align_to([XR, 0, 0], LEFT)
+        HJT = tx("S contient J", 30, WHITE, bold=True).move_to([0, -0.4, 0]).align_to([XR, 0, 0], LEFT)
         self.p(Create(HJ), FadeIn(HJT), DB.animate.set_opacity(0.2), SB.animate.set_opacity(0.2),
                MH.animate.set_opacity(0.35), rt=0.8)
         self.eclair(VGroup(DJ, SJ), rt=0.8)
         self.at(T["ici_b"])
         HB = DashedLine([PX - PW / 2, YB_, 0], [PX + PW / 2 + 0.3, YB_, 0], color=WHITE, stroke_width=3)
-        HBT = tx("S contient B", 34, WHITE, bold=True).next_to(HJT, DOWN, buff=0.35).align_to(HJT, LEFT)
+        HBT = tx("S contient B", 30, WHITE, bold=True).next_to(HJT, DOWN, buff=0.35).align_to(HJT, LEFT)
         self.p(Create(HB), FadeIn(HBT), DB.animate.set_opacity(1), SB.animate.set_opacity(1),
                DJ.animate.set_opacity(0.2), SJ.animate.set_opacity(0.2), HJ.animate.set_opacity(0.35),
                HJT.animate.set_opacity(0.35), rt=0.8)
@@ -1078,7 +1078,7 @@ class Correction(Scene):
         self.p(FadeIn(EQC[0]), FadeIn(EQC[1]), FadeIn(EQC[2]), FadeIn(EQT[0]), FadeIn(EQT[1]), rt=1.0)
         self.at(T["vert"])
         self.p(FadeIn(EQC[3]), FadeIn(EQC[4], scale=0.5), FadeIn(EQT[2]), rt=1.0)
-        CC_ = lignes("Le sirop de menthe contient", "le colorant jaune", "et le colorant bleu.", fs=30, c=RES,
+        CC_ = lignes("Le sirop de menthe contient", "le colorant jaune", "et le colorant bleu.", fs=28, c=RES,
                      buff=0.08)
         CC_B = SurroundingRectangle(CC_, color=RES, buff=0.2, corner_radius=0.12, stroke_width=2.5)
         CC_B.set_fill(RES, opacity=0.08)
