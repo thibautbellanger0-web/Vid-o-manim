@@ -288,6 +288,15 @@ def bouteille(c=EAU):
     return VGroup(corps, col)
 
 
+# =====================================================================
+#  Gestes inspirés de 3Blue1Brown (voir style-3b1b.md)
+# =====================================================================
+def contour(m, w=5):
+    """Contour sombre derrière un texte posé sur un graphe ou un dessin (lisibilité)."""
+    m.set_stroke(BLACK, width=w, background=True)
+    return m
+
+
 def lignes(*textes, fs=28, c=WHITE, w=LARGEUR, buff=0.14):
     return VGroup(*[tx(t, fs, c, w=w) for t in textes]).arrange(DOWN, aligned_edge=LEFT, buff=buff)
 
@@ -368,6 +377,29 @@ class Correction(Scene):
         lab = etiquette("Phrase réponse", RES).next_to(box, UP, buff=0.06).align_to(box, LEFT)
         self.p(Create(box), FadeIn(lab), FadeIn(t, shift=UP * 0.15), rt=rt)
         return VGroup(g, lab)
+
+
+    # ---------------- Gestes inspirés de 3Blue1Brown ----------------
+    def vol(self, source, cible, *extra, arc=-60 * DEGREES, rt=1.0):
+        """Une copie de la source « vole » en arc jusqu'à la cible (donnée → application numérique)."""
+        self.p(TransformFromCopy(source, cible, path_arc=arc), *extra, rt=rt)
+
+    def deduire(self, ancienne, nouvelle, *extra, rt=1.5, **kw):
+        """La nouvelle formule se déduit de l'ancienne : les morceaux identiques glissent à leur place.
+        Les deux formules doivent être découpées en morceaux : MathTex("V", "=", "50", r"\times", ...)."""
+        self.p(TransformMatchingTex(ancienne, nouvelle, path_arc=-20 * DEGREES, **kw), *extra, rt=rt)
+
+    def eclair(self, m, c=ABSO, rt=1.0):
+        """Mise en évidence brève : un cadre lumineux fait le tour de m."""
+        self.p(Circumscribe(m, color=c, buff=0.1), rt=rt)
+
+    def estomper(self, *mobs, op=0.3, rt=0.6, extra=()):
+        """Met au second plan sans effacer (le point d'attention reste unique)."""
+        self.p(*[m.animate.set_opacity(op) for m in mobs], *extra, rt=rt)
+
+    def raviver(self, *mobs, rt=0.6, extra=()):
+        """Rend leur pleine opacité aux objets estompés."""
+        self.p(*[m.animate.set_opacity(1) for m in mobs], *extra, rt=rt)
 
     # =================================================================
     def construct(self):
@@ -603,36 +635,52 @@ class Correction(Scene):
         self.apparait(DM)
         # Conversion : 50 × 1 mL, puis 1 mL remplacé par 10⁻³ L
         self.at(T["conv"])
-        c1 = mx(r"1\ \mathrm{mL}", WHITE, 50)
-        CV = row(mx("V", VOL, 50), mx("=", WHITE, 50), mx("50", VOL, 50), mx(r"\times", WHITE, 50), c1)
+        CV = MathTex("V", "=", "50", r"\times", r"1\ \mathrm{mL}", font_size=50)
+        CV[0].set_color(VOL)
+        CV[2].set_color(VOL)
         CV.move_to([0.0, -1.3, 0]).align_to([-2.9, 0, 0], LEFT)
         ETQ_C = tx("Conversion en litres", 24, SOFT).next_to(CV, UP, buff=0.15).align_to(CV, LEFT)
         self.p(FadeIn(ETQ_C), Write(CV), rt=1.0)
         self.at(T["conv2"])
-        c2 = mx(r"10^{-3}\ \mathrm{L}", WHITE, 50).move_to(c1).align_to(c1, LEFT)
-        self.p(Transform(c1, c2), rt=0.8)
+        CV2 = MathTex("V", "=", "50", r"\times", r"10^{-3}\ \mathrm{L}", font_size=50)
+        CV2[0].set_color(VOL)
+        CV2[2].set_color(VOL)
+        CV2.move_to(CV).align_to(CV, LEFT)
+        self.deduire(CV, CV2, rt=0.8)          # « 1 mL » devient « 10⁻³ L », le reste ne bouge pas
         self.at(T["conv3"])
-        CV3 = row(mx("=", WHITE, 50), val(r"0{,}050", r"\mathrm{L}", VOL, 50)).next_to(CV, RIGHT, buff=0.25)
+        CV3 = row(mx("=", WHITE, 50), val(r"0{,}050", r"\mathrm{L}", VOL, 50)).next_to(CV2, RIGHT, buff=0.25)
         self.p(Write(CV3), rt=0.8)
 
-        # Calcul de ρ
-        self.at(T["lit"] - 0.5)
-        self.vider(rt=0.5)
+        # Calcul de ρ : les données se rangent dans une carte (elles serviront dans l'application numérique)
+        self.at(T["lit"] - 0.9)
+        DON = VGroup(row(mx("m", MASSE, 40), mx("=", WHITE, 40), val(r"39{,}5", r"\mathrm{g}", MASSE, 40)),
+                     row(mx("V", VOL, 40), mx("=", WHITE, 40), val(r"0{,}050", r"\mathrm{L}", VOL, 40))).arrange(
+            DOWN, aligned_edge=LEFT, buff=0.3)
+        DON_B = SurroundingRectangle(DON, color=SOFT, buff=0.25, corner_radius=0.12, stroke_width=2)
+        DON_T = tx("Données", 22, SOFT).next_to(DON_B, UP, buff=0.08).align_to(DON_B, LEFT)
+        VGroup(DON, DON_B, DON_T).move_to([-4.85, 1.15, 0])
+        restes = [m for m in self.mobjects if m not in (self.hdr_ex, self.hdr_q, DM, CV2, CV3, CV)]
+        self.p(ReplacementTransform(DM, DON[0]), FadeTransform(VGroup(CV2, CV3), DON[1]),
+               FadeIn(DON_B), FadeIn(DON_T), *[FadeOut(m) for m in restes], rt=0.8)
+        self.remove(CV, CV2, CV3)
         LIT = row(mx(r"\rho", RHO, 72), mx("=", WHITE, 72), frac(mx("m", MASSE, 72), mx("V", VOL, 72)))
-        LIT.move_to([-3.6, 1.2, 0])
+        LIT.move_to([-1.4, 1.2, 0])
         self.at(T["lit"])
         self.p(Write(LIT), rt=1.0)
         self.encadre(LIT, rt=0.8)
         self.at(T["an"])
         AN = row(mx(r"\rho", RHO, 64), mx("=", WHITE, 64),
                  frac(val(r"39{,}5", r"\mathrm{g}", MASSE, 64), val(r"0{,}050", r"\mathrm{L}", VOL, 64)))
-        AN.move_to([2.6, 1.2, 0])
-        self.p(Write(AN), rt=1.2)
+        AN.move_to([3.6, 1.2, 0])
         self.tag_an(AN)
+        self.p(Write(AN[0]), Write(AN[1]), Write(AN[2][1]), rt=0.5)
+        self.vol(DON[0][2], AN[2][0], rt=0.9)      # 39,5 g vole des données vers le numérateur
+        self.vol(DON[1][2], AN[2][2], rt=0.9)      # 0,050 L vole vers le dénominateur
         self.at(T["res"])
         RS = row(mx(r"\rho", RHO, 72), mx("=", WHITE, 72),
                  val("790", (r"\mathrm{g\cdot}", r"\mathrm{L^{-1}}"), RES, 72)).move_to([-2.6, -0.9, 0])
         self.p(Write(RS), rt=1.0)
+        self.eclair(RS[2], RES)
         self.at(T["ref"])
         REF = VGroup(tx("Valeur de référence :", 26, SOFT),
                      row(tx("éthanol", 32, "#C77DFF", bold=True),
@@ -663,17 +711,18 @@ class Correction(Scene):
         self.at(T["palier"])
         P1 = Line(cp(1.2, 0), cp(3.4, 0), color=ABSO, stroke_width=14)
         P2 = Line(cp(5.4, 100), cp(8.2, 100), color=ABSO, stroke_width=14)
-        LP = tx("paliers", 30, ABSO, bold=True).move_to(cp(3.0, 122))
+        LP = contour(tx("paliers", 30, ABSO, bold=True).move_to(cp(3.0, 122)))
         self.p(Create(P1), Create(P2), FadeIn(LP), rt=1.0)
+        self.eclair(VGroup(P1, P2), ABSO, rt=1.0)
         self.at(T["fusion"])
         G0 = DashedLine(cp(0, 0), cp(1.2, 0), color=SOFT, stroke_width=2)
         V0 = mx(r"0\ ^\circ\mathrm{C}", WHITE, 40).next_to(cp(0, 0), LEFT, buff=0.15)
-        F0 = tx("fusion de la glace", 24, WHITE).next_to(P1, DOWN, buff=0.2).shift(RIGHT * 0.3)
+        F0 = contour(tx("fusion de la glace", 24, WHITE).next_to(P1, DOWN, buff=0.2).shift(RIGHT * 0.3))
         self.p(Create(G0), FadeIn(V0), FadeIn(F0), rt=0.8)
         self.at(T["ebullition"])
         G100 = DashedLine(cp(0, 100), cp(5.4, 100), color=SOFT, stroke_width=2)
         V100 = mx(r"100\ ^\circ\mathrm{C}", WHITE, 40).next_to(cp(0, 100), LEFT, buff=0.15)
-        F100 = tx("ébullition de l'eau", 24, WHITE).next_to(P2, UP, buff=0.2)
+        F100 = contour(tx("ébullition de l'eau", 24, WHITE).next_to(P2, UP, buff=0.2))
         self.p(Create(G100), FadeIn(V100), FadeIn(F100), rt=0.8)
         EP = tx("Eau pure : paliers", 28, TCOL, bold=True, w=3.9).move_to([4.8, 1.6, 0])
         self.p(FadeIn(EP), rt=0.5)
@@ -931,19 +980,24 @@ class Correction(Scene):
         COL = colonne(0)
         RJ = row(tx("J :", 32, JAUNE, bold=True), tx("1 tache → corps pur", 32, WHITE), buff=0.25)
         RJ.move_to([0, 1.1, 0]).align_to([XR, 0, 0], LEFT)
-        self.p(Create(COL), FadeIn(RJ), rt=0.8)
+        self.p(Create(COL), FadeIn(RJ), DB.animate.set_opacity(0.25), SJ.animate.set_opacity(0.25),
+               SB.animate.set_opacity(0.25), rt=0.8)
         self.at(T["col_b"])
         RB = row(tx("B :", 32, BLEU, bold=True), tx("1 tache → corps pur", 32, WHITE), buff=0.25)
         RB.next_to(RJ, DOWN, buff=0.35).align_to(RJ, LEFT)
-        self.p(COL.animate.move_to([XCOL[1], YC, 0]), FadeIn(RB), rt=0.8)
+        self.p(COL.animate.move_to([XCOL[1], YC, 0]), FadeIn(RB), DB.animate.set_opacity(1),
+               DJ.animate.set_opacity(0.25), rt=0.8)
         self.at(T["col_s"])
         RSI = row(tx("S :", 32, VERT, bold=True), tx("2 taches → mélange", 32, ABSO, bold=True), buff=0.25)
         RSI.next_to(RB, DOWN, buff=0.35).align_to(RJ, LEFT)
-        self.p(COL.animate.move_to([XCOL[2], YC, 0]), FadeIn(RSI), rt=0.8)
+        self.p(COL.animate.move_to([XCOL[2], YC, 0]), FadeIn(RSI), SJ.animate.set_opacity(1),
+               SB.animate.set_opacity(1), DB.animate.set_opacity(0.25), rt=0.8)
+        self.eclair(VGroup(SJ, SB), VERT, rt=0.8)
 
         # Lecture horizontale
         self.at(T["horizontale"] - 0.5)
-        self.p(FadeOut(COL), FadeOut(LV), FadeOut(RJ), FadeOut(RB), FadeOut(RSI), rt=0.5)
+        self.p(FadeOut(COL), FadeOut(LV), FadeOut(RJ), FadeOut(RB), FadeOut(RSI), DJ.animate.set_opacity(1),
+               DB.animate.set_opacity(1), rt=0.5)
         self.at(T["horizontale"])
         LH_ = row(tx("Lecture horizontale", 38, ABSO, bold=True),
                   Arrow(start=LEFT * 0.4, end=RIGHT * 0.4, color=ABSO, buff=0, stroke_width=6), buff=0.3)
@@ -956,11 +1010,13 @@ class Correction(Scene):
         self.at(T["ici"])
         HJ = DashedLine([PX - PW / 2, YJ, 0], [PX + PW / 2 + 0.3, YJ, 0], color=JAUNE, stroke_width=4)
         HJT = tx("S contient J", 32, JAUNE, bold=True).move_to([0, -0.4, 0]).align_to([XR, 0, 0], LEFT)
-        self.p(Create(HJ), FadeIn(HJT), Indicate(VGroup(DJ, SJ), color=WHITE), rt=1.2)
+        self.p(Create(HJ), FadeIn(HJT), rt=0.8)
+        self.eclair(VGroup(DJ, SJ), JAUNE, rt=0.8)
         self.at(T["ici_b"])
         HB = DashedLine([PX - PW / 2, YB_, 0], [PX + PW / 2 + 0.3, YB_, 0], color=BLEU, stroke_width=4)
         HBT = tx("S contient B", 32, BLEU, bold=True).next_to(HJT, DOWN, buff=0.35).align_to(HJT, LEFT)
-        self.p(Create(HB), FadeIn(HBT), Indicate(VGroup(DB, SB), color=WHITE), rt=1.2)
+        self.p(Create(HB), FadeIn(HBT), rt=0.8)
+        self.eclair(VGroup(DB, SB), BLEU, rt=0.8)
 
         # Conclusion : jaune + bleu = vert
         self.at(T["concl"])
